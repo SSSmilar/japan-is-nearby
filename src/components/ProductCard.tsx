@@ -15,11 +15,11 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const [quantity, setQuantity] = useState(1);
+  const [quantity, setQuantity] = useState(4); // Changed initial value to 4
   const [isHovered, setIsHovered] = useState(false);
 
   const handleIncrement = () => setQuantity(prev => prev + 1);
-  const handleDecrement = () => setQuantity(prev => Math.max(1, prev - 1));
+  const handleDecrement = () => setQuantity(prev => Math.max(4, prev - 1)); // Changed minimum to 4
 
   return (
     <motion.div
