@@ -13,20 +13,22 @@ const Hero = () => {
       learnMore: 'Learn More'
     },
     ru: {
-      title: 'Диски из Японии',
-      subtitle: 'Испытайте идеальное сочетание японского качества и стиля с нашей подборкой премиальных дисков.',
-      shopNow: 'Купить',
-      learnMore: 'Подробнее'
+      title: 'Япония рядом',
+      subtitle: 'Почувствуйте идеальное сочетание японского качества и стиля с нашей подборкой премиальных дисков.',
+      shopNow: 'Купить сейчас',
+      learnMore: 'Узнать больше'
     }
   };
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden">
+      {/* Фоновый градиент */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white"></div>
       </div>
       
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Анимированный заголовок */}
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -36,6 +38,7 @@ const Hero = () => {
           {content[language].title}
         </motion.h1>
         
+        {/* Анимированный подзаголовок */}
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -45,6 +48,7 @@ const Hero = () => {
           {content[language].subtitle}
         </motion.p>
         
+        {/* Анимированные кнопки */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

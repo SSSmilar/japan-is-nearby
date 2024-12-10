@@ -15,11 +15,13 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
-  const [quantity, setQuantity] = useState(4); // Changed initial value to 4
+  // Начальное значение количества - 4
+  const [quantity, setQuantity] = useState(4);
   const [isHovered, setIsHovered] = useState(false);
 
+  // Обработчики изменения количества
   const handleIncrement = () => setQuantity(prev => prev + 1);
-  const handleDecrement = () => setQuantity(prev => Math.max(4, prev - 1)); // Changed minimum to 4
+  const handleDecrement = () => setQuantity(prev => Math.max(4, prev - 1));
 
   return (
     <motion.div
@@ -30,6 +32,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
       transition={{ duration: 0.2 }}
     >
+      {/* Изображение товара */}
       <div className="relative">
         <img src={product.image} alt={product.name} className="w-full h-auto" />
         <button className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white">
@@ -38,6 +41,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       <div className="p-4">
+        {/* Рейтинг и отзывы */}
         <div className="flex items-center mb-2">
           <div className="flex items-center">
             <Star className="w-4 h-4 fill-current text-yellow-400" />
@@ -47,10 +51,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <span className="text-sm text-gray-600">{product.reviews} отзыва</span>
         </div>
 
+        {/* Название товара */}
         <h3 className="text-sm font-medium text-gray-900 mb-2">{product.name}</h3>
         <div className="text-sm text-green-600 mb-2">{product.stock}</div>
         <div className="text-lg font-bold text-gray-900 mb-4">{product.price}</div>
 
+        {/* Элементы управления при наведении */}
         {isHovered && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

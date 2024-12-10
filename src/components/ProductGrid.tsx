@@ -1,6 +1,7 @@
 import React from 'react';
 import ProductCard from './ProductCard';
 
+// Список товаров
 const products = [
   {
     id: 1,
@@ -40,7 +41,7 @@ const products = [
   }
 ];
 
-// Group products by model (X'trike X-136 in this case)
+// Группировка товаров по модели
 const groupedProducts = {
   "X'trike X-136": products
 };
