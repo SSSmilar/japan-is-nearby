@@ -1,7 +1,25 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Hero = () => {
+  const { language } = useLanguage();
+
+  const content = {
+    en: {
+      title: 'Japan is nearby',
+      subtitle: 'Experience the perfect blend of Japanese quality and style with our curated selection of premium wheels.',
+      shopNow: 'Shop Now',
+      learnMore: 'Learn More'
+    },
+    ru: {
+      title: 'Диски из Японии',
+      subtitle: 'Испытайте идеальное сочетание японского качества и стиля с нашей подборкой премиальных дисков.',
+      shopNow: 'Купить',
+      learnMore: 'Подробнее'
+    }
+  };
+
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden">
       <div className="absolute inset-0 z-0">
@@ -15,7 +33,7 @@ const Hero = () => {
           transition={{ duration: 0.5 }}
           className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
         >
-          Premium Wheels & Tires
+          {content[language].title}
         </motion.h1>
         
         <motion.p 
@@ -24,7 +42,7 @@ const Hero = () => {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
         >
-          Experience the perfect blend of performance and style with our curated selection of premium wheels and tires.
+          {content[language].subtitle}
         </motion.p>
         
         <motion.div 
@@ -34,10 +52,10 @@ const Hero = () => {
           className="flex justify-center space-x-4"
         >
           <button className="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-900 transition-colors">
-            Shop Now
+            {content[language].shopNow}
           </button>
           <button className="bg-white text-black px-8 py-3 rounded-full border border-black hover:bg-gray-50 transition-colors">
-            Learn More
+            {content[language].learnMore}
           </button>
         </motion.div>
       </div>
