@@ -9,14 +9,12 @@ const Navbar = () => {
 
   const content = {
     en: {
-      tires: 'Tires',
       wheels: 'Wheels',
-      services: 'Services'
+      delivery: 'Delivery'
     },
     ru: {
-      tires: 'Шины',
       wheels: 'Диски',
-      services: 'Услуги'
+      delivery: 'Доставка'
     }
   };
 
@@ -32,14 +30,11 @@ const Navbar = () => {
           </div>
           
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/tires" className="text-gray-900 hover:text-gray-600 transition-colors">
-              {content[language].tires}
-            </Link>
-            <Link to="/wheels" className="text-gray-900 hover:text-gray-600 transition-colors">
+            <Link to="/catalog" className="text-gray-900 hover:text-gray-600 transition-colors">
               {content[language].wheels}
             </Link>
-            <Link to="/services" className="text-gray-900 hover:text-gray-600 transition-colors">
-              {content[language].services}
+            <Link to="/delivery" className="text-gray-900 hover:text-gray-600 transition-colors">
+              {content[language].delivery}
             </Link>
           </div>
 
