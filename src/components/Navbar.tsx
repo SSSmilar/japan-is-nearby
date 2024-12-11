@@ -1,11 +1,14 @@
 import React from 'react';
 import Logo from './Logo';
-import { Search, Globe } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Globe } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import SearchBox from './SearchBox';
+import { products } from './ProductGrid';
 
 const Navbar = () => {
   const { language, toggleLanguage } = useLanguage();
+  const location = useLocation();
 
   const content = {
     en: {
@@ -15,6 +18,23 @@ const Navbar = () => {
     ru: {
       wheels: 'Диски',
       delivery: 'Доставка'
+    }
+  };
+
+  const handleProductSelect = (product: any) => {
+    if (location.pathname !== '/catalog') {
+      window.location.href = `/catalog#product-${product.id}`;
+    } else {
+      const element = document.getElementById(`product-${product.id}`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Имитация наведения мыши
+        const event = new MouseEvent('mouseenter', {
+          bubbles: true,
+          cancelable: true,
+        });
+        element.dispatchEvent(event);
+      }
     }
   };
 
@@ -39,6 +59,11 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center space-x-4">
+            <SearchBox 
+              products={products}
+              onProductSelect={handleProductSelect}
+              className="w-64"
+            />
             <button
               onClick={toggleLanguage}
               className="flex items-center space-x-1 text-gray-500 hover:text-gray-900 transition-colors"
@@ -46,9 +71,6 @@ const Navbar = () => {
               <Globe className="w-5 h-5" />
               <span className="text-sm font-medium">{language.toUpperCase()}</span>
             </button>
-            <div className="relative">
-              <Search className="w-5 h-5 text-gray-500" />
-            </div>
           </div>
         </div>
       </div>

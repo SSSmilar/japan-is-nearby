@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import ProductCard from './ProductCard';
-import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { Product } from '../types/product';
 
 // Список товаров
 export const products = [
@@ -115,16 +114,6 @@ export const products = [
   }
 ];
 
-type Product = {
-  id: number;
-  name: string;
-  price: string;
-  rating: number;
-  reviews: number;
-  stock: string;
-  image: string;
-};
-
 // Группировка товаров по модели
 const groupProducts = (products: Product[]) => {
   return products.reduce((acc, product) => {
@@ -138,79 +127,11 @@ const groupProducts = (products: Product[]) => {
 };
 
 const ProductGrid = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
   const productRefs = useRef<Record<number, HTMLDivElement | null>>({});
-
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const groupedProducts = groupProducts(filteredProducts);
-
-  const handleProductSelect = (product: Product) => {
-    setSelectedProduct(product);
-    setSearchQuery('');
-    setIsSearching(false);
-    
-    // Прокрутка к выбранному товару
-    const productElement = productRefs.current[product.id];
-    if (productElement) {
-      productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Имитация наведения мыши
-      const event = new MouseEvent('mouseenter', {
-        bubbles: true,
-        cancelable: true,
-      });
-      productElement.dispatchEvent(event);
-    }
-  };
+  const groupedProducts = groupProducts(products);
 
   return (
     <div className="space-y-12">
-      <div className="relative mb-8">
-        <Command className="rounded-lg border shadow-md">
-          <CommandInput
-            placeholder="Поиск по названию..."
-            value={searchQuery}
-            onValueChange={(value) => {
-              setSearchQuery(value);
-              setIsSearching(true);
-            }}
-          />
-          {isSearching && (
-            <CommandList>
-              <ScrollArea className="h-[200px]">
-                {filteredProducts.length === 0 ? (
-                  <CommandEmpty>Товары не найдены</CommandEmpty>
-                ) : (
-                  <CommandGroup heading="Товары">
-                    {filteredProducts.map((product) => (
-                      <CommandItem
-                        key={product.id}
-                        value={product.name}
-                        onSelect={() => handleProductSelect(product)}
-                        className="cursor-pointer"
-                      >
-                        <div className="flex items-center">
-                          <img 
-                            src={product.image} 
-                            alt={product.name} 
-                            className="w-8 h-8 mr-2 object-cover rounded"
-                          />
-                          <span>{product.name}</span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                )}
-              </ScrollArea>
-            </CommandList>
-          )}
-        </Command>
-      </div>
-
       {Object.entries(groupedProducts).map(([model, products]) => (
         <div key={model}>
           <h2 className="text-2xl font-bold mb-6">{model}</h2>
@@ -219,10 +140,10 @@ const ProductGrid = () => {
               <div
                 key={product.id}
                 ref={(el) => (productRefs.current[product.id] = el)}
+                id={`product-${product.id}`}
               >
                 <ProductCard 
                   product={product}
-                  isSelected={selectedProduct?.id === product.id}
                 />
               </div>
             ))}
