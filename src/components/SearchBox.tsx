@@ -14,9 +14,9 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
   const [isSearching, setIsSearching] = useState(false);
   const [open, setOpen] = useState(false);
 
-  const filteredProducts = products ? products.filter(product =>
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  ) : [];
+  );
 
   const handleSelect = (product: Product) => {
     onProductSelect(product);
@@ -34,7 +34,7 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
 
   return (
     <div className={`${className} relative`}>
-      <Command className="rounded-lg border shadow-md" shouldFilter={false}>
+      <Command className="rounded-lg border shadow-md">
         <CommandInput
           placeholder="Поиск по названию..."
           value={searchQuery}
@@ -47,36 +47,34 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
           onFocus={() => setOpen(true)}
           className="bg-white"
         />
-        {open && (
-          <div className="absolute left-0 right-0 mt-1 bg-white rounded-lg border shadow-lg z-50">
-            <CommandList>
-              <ScrollArea className="h-[200px]">
-                {!filteredProducts || filteredProducts.length === 0 ? (
-                  <CommandEmpty>Товары не найдены</CommandEmpty>
-                ) : (
-                  <CommandGroup heading="Товары">
-                    {filteredProducts.map((product) => (
-                      <CommandItem
-                        key={product.id}
-                        value={product.name}
-                        onSelect={() => handleSelect(product)}
-                        className="cursor-pointer hover:bg-gray-100"
-                      >
-                        <div className="flex items-center">
-                          <img 
-                            src={product.image} 
-                            alt={product.name} 
-                            className="w-8 h-8 mr-2 object-cover rounded"
-                          />
-                          <span>{product.name}</span>
-                        </div>
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                )}
-              </ScrollArea>
-            </CommandList>
-          </div>
+        {open && filteredProducts && (
+          <CommandList>
+            <ScrollArea className="h-[200px]">
+              {filteredProducts.length === 0 ? (
+                <CommandEmpty>Товары не найдены</CommandEmpty>
+              ) : (
+                <CommandGroup heading="Товары">
+                  {filteredProducts.map((product) => (
+                    <CommandItem
+                      key={product.id}
+                      value={product.name}
+                      onSelect={() => handleSelect(product)}
+                      className="cursor-pointer hover:bg-gray-100"
+                    >
+                      <div className="flex items-center">
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-8 h-8 mr-2 object-cover rounded"
+                        />
+                        <span>{product.name}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
+            </ScrollArea>
+          </CommandList>
         )}
       </Command>
     </div>
