@@ -1,6 +1,6 @@
 import React from 'react';
 import Logo from './Logo';
-import { Search, ShoppingCart, Globe } from 'lucide-react';
+import { Search, Globe } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 
@@ -48,12 +48,6 @@ const Navbar = () => {
             </button>
             <div className="relative">
               <Search className="w-5 h-5 text-gray-500" />
-            </div>
-            <div className="relative">
-              <ShoppingCart className="w-5 h-5 text-gray-500" />
-              <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                0
-              </span>
             </div>
           </div>
         </div>
