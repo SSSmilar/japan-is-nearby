@@ -140,6 +140,7 @@ const groupProducts = (products: Product[]) => {
 const ProductGrid = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
   const productRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   const filteredProducts = products.filter(product =>
@@ -151,6 +152,7 @@ const ProductGrid = () => {
   const handleProductSelect = (product: Product) => {
     setSelectedProduct(product);
     setSearchQuery('');
+    setIsSearching(false);
     
     // Прокрутка к выбранному товару
     const productElement = productRefs.current[product.id];
@@ -172,31 +174,37 @@ const ProductGrid = () => {
           <CommandInput
             placeholder="Поиск по названию..."
             value={searchQuery}
-            onValueChange={setSearchQuery}
+            onValueChange={(value) => {
+              setSearchQuery(value);
+              setIsSearching(true);
+            }}
           />
-          {searchQuery && (
+          {isSearching && (
             <CommandList>
               <ScrollArea className="h-[200px]">
-                <CommandEmpty>Товары не найдены</CommandEmpty>
-                <CommandGroup heading="Товары">
-                  {filteredProducts.map((product) => (
-                    <CommandItem
-                      key={product.id}
-                      value={product.name}
-                      onSelect={() => handleProductSelect(product)}
-                      className="cursor-pointer"
-                    >
-                      <div className="flex items-center">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-8 h-8 mr-2 object-cover rounded"
-                        />
-                        <span>{product.name}</span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                {filteredProducts.length === 0 ? (
+                  <CommandEmpty>Товары не найдены</CommandEmpty>
+                ) : (
+                  <CommandGroup heading="Товары">
+                    {filteredProducts.map((product) => (
+                      <CommandItem
+                        key={product.id}
+                        value={product.name}
+                        onSelect={() => handleProductSelect(product)}
+                        className="cursor-pointer"
+                      >
+                        <div className="flex items-center">
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            className="w-8 h-8 mr-2 object-cover rounded"
+                          />
+                          <span>{product.name}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
               </ScrollArea>
             </CommandList>
           )}
