@@ -33,7 +33,7 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} relative`}>
       <Command className="rounded-lg border shadow-md" shouldFilter={false}>
         <CommandInput
           placeholder="Поиск по названию..."
@@ -45,8 +45,12 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
           }}
           onBlur={handleBlur}
           onFocus={() => setOpen(true)}
+          className="bg-white"
         />
-        {open && (
+      </Command>
+      
+      {open && (
+        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg border shadow-lg z-50">
           <CommandList>
             <ScrollArea className="h-[200px]">
               {!filteredProducts || filteredProducts.length === 0 ? (
@@ -58,7 +62,7 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
                       key={product.id}
                       value={product.name}
                       onSelect={() => handleSelect(product)}
-                      className="cursor-pointer"
+                      className="cursor-pointer hover:bg-gray-100"
                     >
                       <div className="flex items-center">
                         <img 
@@ -74,8 +78,8 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
               )}
             </ScrollArea>
           </CommandList>
-        )}
-      </Command>
+        </div>
+      )}
     </div>
   );
 };
