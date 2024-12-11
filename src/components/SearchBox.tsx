@@ -13,9 +13,9 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  const filteredProducts = products.filter(product =>
+  const filteredProducts = products ? products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) : [];
 
   const handleSelect = (product: Product) => {
     onProductSelect(product);
@@ -23,7 +23,6 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
     setIsSearching(false);
   };
 
-  // Скрываем подсказки при потере фокуса
   const handleBlur = () => {
     setTimeout(() => {
       setIsSearching(false);
@@ -45,7 +44,7 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
         {isSearching && searchQuery && (
           <CommandList>
             <ScrollArea className="h-[200px]">
-              {filteredProducts.length === 0 ? (
+              {!filteredProducts || filteredProducts.length === 0 ? (
                 <CommandEmpty>Товары не найдены</CommandEmpty>
               ) : (
                 <CommandGroup heading="Товары">
