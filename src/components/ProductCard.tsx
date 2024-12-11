@@ -25,6 +25,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
 
   return (
     <motion.div
+      id={`product-${product.id}`}
       className="relative bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
