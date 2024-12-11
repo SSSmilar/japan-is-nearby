@@ -47,39 +47,38 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
           onFocus={() => setOpen(true)}
           className="bg-white"
         />
+        {open && (
+          <div className="absolute left-0 right-0 mt-1 bg-white rounded-lg border shadow-lg z-50">
+            <CommandList>
+              <ScrollArea className="h-[200px]">
+                {!filteredProducts || filteredProducts.length === 0 ? (
+                  <CommandEmpty>Товары не найдены</CommandEmpty>
+                ) : (
+                  <CommandGroup heading="Товары">
+                    {filteredProducts.map((product) => (
+                      <CommandItem
+                        key={product.id}
+                        value={product.name}
+                        onSelect={() => handleSelect(product)}
+                        className="cursor-pointer hover:bg-gray-100"
+                      >
+                        <div className="flex items-center">
+                          <img 
+                            src={product.image} 
+                            alt={product.name} 
+                            className="w-8 h-8 mr-2 object-cover rounded"
+                          />
+                          <span>{product.name}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+              </ScrollArea>
+            </CommandList>
+          </div>
+        )}
       </Command>
-      
-      {open && (
-        <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-lg border shadow-lg z-50">
-          <CommandList>
-            <ScrollArea className="h-[200px]">
-              {!filteredProducts || filteredProducts.length === 0 ? (
-                <CommandEmpty>Товары не найдены</CommandEmpty>
-              ) : (
-                <CommandGroup heading="Товары">
-                  {filteredProducts.map((product) => (
-                    <CommandItem
-                      key={product.id}
-                      value={product.name}
-                      onSelect={() => handleSelect(product)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <div className="flex items-center">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-8 h-8 mr-2 object-cover rounded"
-                        />
-                        <span>{product.name}</span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </ScrollArea>
-          </CommandList>
-        </div>
-      )}
     </div>
   );
 };
