@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Plus, Minus, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -12,28 +12,35 @@ interface ProductCardProps {
     stock: string;
     image: string;
   };
+  isSelected?: boolean;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  // Начальное значение количества - 4
+const ProductCard = ({ product, isSelected }: ProductCardProps) => {
   const [quantity, setQuantity] = useState(4);
   const [isHovered, setIsHovered] = useState(false);
 
-  // Обработчики изменения количества
+  // Автоматически показываем контролы при выборе товара через поиск
+  useEffect(() => {
+    if (isSelected) {
+      setIsHovered(true);
+    }
+  }, [isSelected]);
+
   const handleIncrement = () => setQuantity(prev => prev + 1);
   const handleDecrement = () => setQuantity(prev => Math.max(4, prev - 1));
 
   return (
     <motion.div
       id={`product-${product.id}`}
-      className="relative bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
+      className={`relative bg-white rounded-lg shadow-sm border ${
+        isSelected ? 'border-blue-500' : 'border-gray-200'
+      } overflow-hidden`}
       onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
+      onHoverEnd={() => !isSelected && setIsHovered(false)}
       initial={false}
       animate={isHovered ? { scale: 1.02 } : { scale: 1 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Изображение товара */}
       <div className="relative">
         <img src={product.image} alt={product.name} className="w-full h-auto" />
         <button className="absolute top-4 right-4 p-2 rounded-full bg-white/80 hover:bg-white">
@@ -42,7 +49,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
       </div>
 
       <div className="p-4">
-        {/* Рейтинг и отзывы */}
         <div className="flex items-center mb-2">
           <div className="flex items-center">
             <Star className="w-4 h-4 fill-current text-yellow-400" />
@@ -52,12 +58,10 @@ const ProductCard = ({ product }: ProductCardProps) => {
           <span className="text-sm text-gray-600">{product.reviews} отзыва</span>
         </div>
 
-        {/* Название товара */}
         <h3 className="text-sm font-medium text-gray-900 mb-2">{product.name}</h3>
         <div className="text-sm text-green-600 mb-2">{product.stock}</div>
         <div className="text-lg font-bold text-gray-900 mb-4">{product.price}</div>
 
-        {/* Элементы управления при наведении */}
         {isHovered && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}

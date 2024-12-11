@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import ProductCard from './ProductCard';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 // Список товаров
 export const products = [
@@ -113,8 +115,18 @@ export const products = [
   }
 ];
 
+type Product = {
+  id: number;
+  name: string;
+  price: string;
+  rating: number;
+  reviews: number;
+  stock: string;
+  image: string;
+};
+
 // Группировка товаров по модели
-const groupProducts = (products: typeof products) => {
+const groupProducts = (products: Product[]) => {
   return products.reduce((acc, product) => {
     const model = product.name.split(' ')[0] + ' ' + product.name.split(' ')[1];
     if (!acc[model]) {
@@ -122,35 +134,89 @@ const groupProducts = (products: typeof products) => {
     }
     acc[model].push(product);
     return acc;
-  }, {} as Record<string, typeof products>);
+  }, {} as Record<string, Product[]>);
 };
 
 const ProductGrid = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const productRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-  
+
   const groupedProducts = groupProducts(filteredProducts);
+
+  const handleProductSelect = (product: Product) => {
+    setSelectedProduct(product);
+    setSearchQuery('');
+    
+    // Прокрутка к выбранному товару
+    const productElement = productRefs.current[product.id];
+    if (productElement) {
+      productElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Имитация наведения мыши
+      const event = new MouseEvent('mouseenter', {
+        bubbles: true,
+        cancelable: true,
+      });
+      productElement.dispatchEvent(event);
+    }
+  };
 
   return (
     <div className="space-y-12">
-      <div className="mb-8">
-        <input
-          type="text"
-          placeholder="Поиск по названию..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded-lg"
-        />
+      <div className="relative mb-8">
+        <Command className="rounded-lg border shadow-md">
+          <CommandInput
+            placeholder="Поиск по названию..."
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+          />
+          {searchQuery && (
+            <CommandList>
+              <ScrollArea className="h-[200px]">
+                <CommandEmpty>Товары не найдены</CommandEmpty>
+                <CommandGroup heading="Товары">
+                  {filteredProducts.map((product) => (
+                    <CommandItem
+                      key={product.id}
+                      value={product.name}
+                      onSelect={() => handleProductSelect(product)}
+                      className="cursor-pointer"
+                    >
+                      <div className="flex items-center">
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="w-8 h-8 mr-2 object-cover rounded"
+                        />
+                        <span>{product.name}</span>
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </ScrollArea>
+            </CommandList>
+          )}
+        </Command>
       </div>
+
       {Object.entries(groupedProducts).map(([model, products]) => (
         <div key={model}>
           <h2 className="text-2xl font-bold mb-6">{model}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <div
+                key={product.id}
+                ref={(el) => (productRefs.current[product.id] = el)}
+              >
+                <ProductCard 
+                  product={product}
+                  isSelected={selectedProduct?.id === product.id}
+                />
+              </div>
             ))}
           </div>
         </div>
