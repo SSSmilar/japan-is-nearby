@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard';
 import { Product } from '../types/product';
 
@@ -127,7 +127,27 @@ const groupProducts = (products: Product[]) => {
 };
 
 const ProductGrid = () => {
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const productRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  // Listen for URL hash changes to highlight product
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash.startsWith('#product-')) {
+        const id = parseInt(hash.replace('#product-', ''));
+        setSelectedProductId(id);
+      } else {
+        setSelectedProductId(null);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Check initial hash
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const groupedProducts = groupProducts(products);
 
   return (
@@ -144,6 +164,7 @@ const ProductGrid = () => {
               >
                 <ProductCard 
                   product={product}
+                  isSelected={product.id === selectedProductId}
                 />
               </div>
             ))}

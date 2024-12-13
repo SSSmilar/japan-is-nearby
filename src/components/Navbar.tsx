@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import SearchBox from './SearchBox';
 import { products } from './ProductGrid';
+import CartIcon from './CartIcon';
 
 const Navbar = () => {
   const { language, toggleLanguage } = useLanguage();
@@ -64,6 +65,9 @@ const Navbar = () => {
               onProductSelect={handleProductSelect}
               className="w-64"
             />
+            <div className="flex items-center">
+              <CartIcon />
+            </div>
             <button
               onClick={toggleLanguage}
               className="flex items-center space-x-1 text-gray-500 hover:text-gray-900 transition-colors"

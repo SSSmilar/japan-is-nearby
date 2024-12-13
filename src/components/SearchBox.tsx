@@ -1,82 +1,109 @@
-import React, { useState } from 'react';
-import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import React, { useState, useRef, useEffect } from 'react';
+import { Search } from 'lucide-react';
 import { Product } from '../types/product';
+import { cn } from '../lib/utils';
 
 interface SearchBoxProps {
   products: Product[];
-  onProductSelect: (product: Product) => void;
-  className?: string;
 }
 
-const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
-  const [open, setOpen] = useState(false);
+const SearchBox = ({ products }: SearchBoxProps) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
 
-  const handleSelect = (product: Product) => {
-    onProductSelect(product);
-    setSearchQuery('');
-    setIsSearching(false);
-    setOpen(false);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    if (term.trim()) {
+      const filtered = products.filter(product =>
+        product.name.toLowerCase().includes(term.toLowerCase())
+      );
+      setFilteredProducts(filtered);
+    } else {
+      setFilteredProducts([]);
+    }
   };
 
-  const handleBlur = () => {
-    setTimeout(() => {
-      setIsSearching(false);
-      setOpen(false);
-    }, 200);
+  const handleProductSelect = (product: Product) => {
+    const element = document.getElementById(`product-${product.id}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      // Добавляем класс для подсветки
+      element.classList.add('highlight-product');
+      
+      // Убираем класс через 10 секунд
+      setTimeout(() => {
+        element.classList.remove('highlight-product');
+      }, 10000);
+    }
+
+    // Сбрасываем состояние поиска
+    setSearchTerm('');
+    setFilteredProducts([]);
+    setIsExpanded(false);
   };
 
   return (
-    <div className={`${className} relative`}>
-      <Command className="rounded-lg border shadow-md">
-        <CommandInput
-          placeholder="Поиск по названию..."
-          value={searchQuery}
-          onValueChange={(value) => {
-            setSearchQuery(value);
-            setIsSearching(!!value);
-            setOpen(!!value);
-          }}
-          onBlur={handleBlur}
-          onFocus={() => setOpen(true)}
-          className="bg-white"
-        />
-        {open && filteredProducts && (
-          <CommandList>
-            <ScrollArea className="h-[200px]">
-              {filteredProducts.length === 0 ? (
-                <CommandEmpty>Товары не найдены</CommandEmpty>
-              ) : (
-                <CommandGroup heading="Товары">
-                  {filteredProducts.map((product) => (
-                    <CommandItem
-                      key={product.id}
-                      value={product.name}
-                      onSelect={() => handleSelect(product)}
-                      className="cursor-pointer hover:bg-gray-100"
-                    >
-                      <div className="flex items-center">
-                        <img 
-                          src={product.image} 
-                          alt={product.name} 
-                          className="w-8 h-8 mr-2 object-cover rounded"
-                        />
-                        <span>{product.name}</span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
-            </ScrollArea>
-          </CommandList>
-        )}
-      </Command>
+    <div ref={searchRef} className="relative">
+      <div className={cn(
+        'flex items-center transition-all duration-300',
+        isExpanded ? 'w-64' : 'w-40'
+      )}>
+        <div className="relative flex-1">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => setIsExpanded(true)}
+            placeholder="Поиск..."
+            className="w-full pl-10 pr-4 py-2 text-sm bg-gray-100 border border-transparent rounded-lg focus:outline-none focus:border-blue-500"
+          />
+          <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+        </div>
+      </div>
+
+      {isExpanded && searchTerm.trim() && (
+        <div className="absolute z-50 w-96 mt-2 bg-white rounded-lg shadow-lg border border-gray-200 max-h-96 overflow-auto">
+          {filteredProducts.length > 0 ? (
+            filteredProducts.map(product => (
+              <div
+                key={product.id}
+                onClick={() => handleProductSelect(product)}
+                className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer"
+              >
+                <div className="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden bg-gray-50">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium truncate">{product.name}</div>
+                  <div className="text-sm text-gray-500">{product.price}</div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="px-4 py-2 text-gray-500">Ничего не найдено</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
