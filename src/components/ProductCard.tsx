@@ -6,12 +6,13 @@ import { Plus, Minus } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
 
-interface ProductCardProps {
+export interface ProductCardProps {
   product: Product;
+  isSelected?: boolean;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  const [isHighlighted, setIsHighlighted] = useState(false);
+const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
+  const [isHighlighted, setIsHighlighted] = useState(isSelected);
   const [isHovered, setIsHovered] = useState(false);
   const [quantity, setQuantity] = useState(4);
   const cardRef = useRef<HTMLDivElement>(null);

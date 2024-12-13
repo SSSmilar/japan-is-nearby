@@ -3,11 +3,13 @@ import { Search } from 'lucide-react';
 import { Product } from '../types/product';
 import { cn } from '../lib/utils';
 
-interface SearchBoxProps {
+export interface SearchBoxProps {
   products: Product[];
+  onProductSelect?: (product: Product) => void;
+  className?: string;
 }
 
-const SearchBox = ({ products }: SearchBoxProps) => {
+const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -56,6 +58,10 @@ const SearchBox = ({ products }: SearchBoxProps) => {
     setSearchTerm('');
     setFilteredProducts([]);
     setIsExpanded(false);
+
+    if (onProductSelect) {
+      onProductSelect(product);
+    }
   };
 
   return (
