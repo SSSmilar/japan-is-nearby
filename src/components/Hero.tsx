@@ -12,11 +12,23 @@ import { products } from './ProductGrid';
 import { useNavigate } from 'react-router-dom';
 import Autoplay from 'embla-carousel-autoplay';
 import { cn } from '@/lib/utils';
+import type { CarouselApi } from "@/components/ui/carousel";
 
 const Hero = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const [currentSlide, setCurrentSlide] = React.useState(0);
+  const [api, setApi] = React.useState<CarouselApi>();
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    api.on("select", () => {
+      setCurrentSlide(api.selectedScrollSnap());
+    });
+  }, [api]);
 
   const handleProductClick = (productId: number) => {
     navigate(`/catalog#product-${productId}`);
@@ -51,10 +63,8 @@ const Hero = () => {
             delay: 5000,
           }),
         ]}
+        setApi={setApi}
         className="w-full h-screen"
-        onSelect={(api) => {
-          setCurrentSlide(api.selectedScrollSnap());
-        }}
       >
         <CarouselContent>
           {featuredProducts.map((product, index) => (
@@ -82,10 +92,7 @@ const Hero = () => {
             <button
               key={index}
               onClick={() => {
-                const emblaApi = (document.querySelector('[data-embla-api]') as any)?.__embla;
-                if (emblaApi) {
-                  emblaApi.scrollTo(index);
-                }
+                api?.scrollTo(index);
               }}
               className={cn(
                 "w-3 h-3 rounded-full transition-all duration-300",
