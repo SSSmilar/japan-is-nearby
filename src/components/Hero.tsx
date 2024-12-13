@@ -46,79 +46,111 @@ const Hero = () => {
     return lang === 'ru' ? "ВЫГОДА ДО 400 000 ₽" : "SAVE UP TO 400,000 ₽";
   };
 
-  return (
-    <div className="relative min-h-screen">
-      <Carousel
-        opts={{
-          loop: true,
-        }}
-        plugins={[
-          Autoplay({
-            delay: 5000,
-          }),
-        ]}
-        setApi={setApi}
-        className="w-full h-screen"
-      >
-        <CarouselContent>
-          {featuredProducts.map((product, index) => (
-            <CarouselItem key={product.id} className="relative h-screen">
-              <div 
-                className="absolute inset-0 cursor-pointer"
-                onClick={() => handleProductClick(product.id)}
-              >
-                <img 
-                  src={product.image} 
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
-                
-                <motion.div 
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5 }}
-                  className="absolute top-8 left-8 md:left-16 lg:left-24 z-10 text-white max-w-xl"
-                >
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
-                    {getProductTitle(product.name, language)}
-                  </h1>
-                  <p className="text-lg md:text-xl lg:text-2xl mb-8">
-                    {getProductPromo(language)}
-                  </p>
-                </motion.div>
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        
-        <CarouselPrevious className="left-4" />
-        <CarouselNext className="right-4" />
+  const handleModelClick = (productId: number) => {
+    navigate(`/catalog#product-${productId}`);
+  };
 
-        <div className="absolute bottom-8 right-8 flex gap-3">
-          {featuredProducts.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                api?.scrollTo(index);
-              }}
-              className={cn(
-                "transition-all duration-300 p-1",
-                currentSlide === index 
-                  ? "text-white scale-125" 
-                  : "text-white/50 hover:text-white/75"
-              )}
-              aria-label={`Go to slide ${index + 1}`}
-            >
-              {currentSlide === index ? (
-                <SquareDot className="w-6 h-6" />
-              ) : (
-                <Square className="w-6 h-6" />
-              )}
-            </button>
-          ))}
+  return (
+    <div className="flex flex-col min-h-screen">
+      <div className="relative h-[80vh]">
+        <Carousel
+          opts={{
+            loop: true,
+          }}
+          plugins={[
+            Autoplay({
+              delay: 5000,
+            }),
+          ]}
+          setApi={setApi}
+          className="w-full h-full"
+        >
+          <CarouselContent>
+            {featuredProducts.map((product, index) => (
+              <CarouselItem key={product.id} className="relative h-full">
+                <div 
+                  className="absolute inset-0 cursor-pointer"
+                  onClick={() => handleProductClick(product.id)}
+                >
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+                  
+                  <motion.div 
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="absolute top-32 left-8 md:left-16 lg:left-24 z-10 text-white max-w-xl"
+                  >
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                      {getProductTitle(product.name, language)}
+                    </h1>
+                    <p className="text-lg md:text-xl lg:text-2xl mb-8">
+                      {getProductPromo(language)}
+                    </p>
+                  </motion.div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          <CarouselPrevious className="left-4" />
+          <CarouselNext className="right-4" />
+
+          <div className="absolute bottom-8 right-8 flex gap-3">
+            {featuredProducts.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  api?.scrollTo(index);
+                }}
+                className={cn(
+                  "transition-all duration-300 p-1",
+                  currentSlide === index 
+                    ? "text-white scale-125" 
+                    : "text-white/50 hover:text-white/75"
+                )}
+                aria-label={`Go to slide ${index + 1}`}
+              >
+                {currentSlide === index ? (
+                  <SquareDot className="w-6 h-6" />
+                ) : (
+                  <Square className="w-6 h-6" />
+                )}
+              </button>
+            ))}
+          </div>
+        </Carousel>
+      </div>
+
+      <div className="bg-black text-white py-8">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {featuredProducts.map((product) => (
+              <div
+                key={product.id}
+                className="group cursor-pointer"
+                onClick={() => handleModelClick(product.id)}
+              >
+                <div className="relative aspect-square mb-4 overflow-hidden rounded-lg">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <h3 className="text-lg font-medium mb-2">
+                  {getProductTitle(product.name, language)}
+                </h3>
+                <p className="text-sm text-gray-400">{product.price}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </Carousel>
+      </div>
     </div>
   );
 };
