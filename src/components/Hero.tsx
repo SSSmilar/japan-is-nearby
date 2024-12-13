@@ -46,13 +46,9 @@ const Hero = () => {
     return lang === 'ru' ? "ВЫГОДА ДО 400 000 ₽" : "SAVE UP TO 400,000 ₽";
   };
 
-  const handleModelClick = (productId: number) => {
-    navigate(`/catalog#product-${productId}`);
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="relative h-[80vh]">
+      <div className="relative h-[80vh] mt-16"> {/* Added mt-16 to create space below navbar */}
         <Carousel
           opts={{
             loop: true,
@@ -124,32 +120,6 @@ const Hero = () => {
             ))}
           </div>
         </Carousel>
-      </div>
-
-      <div className="bg-black text-white py-8">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="group cursor-pointer"
-                onClick={() => handleModelClick(product.id)}
-              >
-                <div className="relative aspect-square mb-4 overflow-hidden rounded-lg">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                  />
-                </div>
-                <h3 className="text-lg font-medium mb-2">
-                  {getProductTitle(product.name, language)}
-                </h3>
-                <p className="text-sm text-gray-400">{product.price}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
