@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import Autoplay from 'embla-carousel-autoplay';
 import { cn } from '@/lib/utils';
 import type { CarouselApi } from "@/components/ui/carousel";
+import { Square, SquareDot } from 'lucide-react';
 
 const Hero = () => {
   const { language } = useLanguage();
@@ -36,24 +37,17 @@ const Hero = () => {
 
   const featuredProducts = products.slice(0, 4);
 
+  const getProductTitle = (name: string, lang: 'en' | 'ru') => {
+    const words = name.split(' ').slice(0, 3).join(' ');
+    return words;
+  };
+
+  const getProductPromo = (lang: 'en' | 'ru') => {
+    return lang === 'ru' ? "ВЫГОДА ДО 400 000 ₽" : "SAVE UP TO 400,000 ₽";
+  };
+
   return (
     <div className="relative min-h-screen">
-      <div className="absolute top-8 left-8 md:left-16 lg:left-24 z-10 text-white">
-        <motion.div 
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-xl"
-        >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            {language === 'ru' ? "НОВЫЙ HAVAL H3" : "NEW HAVAL H3"}
-          </h1>
-          <p className="text-xl md:text-2xl mb-8">
-            {language === 'ru' ? "ВЫГОДА ДО 400 000 ₽" : "SAVE UP TO 400 000 ₽"}
-          </p>
-        </motion.div>
-      </div>
-
       <Carousel
         opts={{
           loop: true,
@@ -79,6 +73,20 @@ const Hero = () => {
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+                
+                <motion.div 
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="absolute top-8 left-8 md:left-16 lg:left-24 z-10 text-white max-w-xl"
+                >
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight">
+                    {getProductTitle(product.name, language)}
+                  </h1>
+                  <p className="text-lg md:text-xl lg:text-2xl mb-8">
+                    {getProductPromo(language)}
+                  </p>
+                </motion.div>
               </div>
             </CarouselItem>
           ))}
@@ -87,7 +95,7 @@ const Hero = () => {
         <CarouselPrevious className="left-4" />
         <CarouselNext className="right-4" />
 
-        <div className="absolute bottom-8 right-8 flex gap-2">
+        <div className="absolute bottom-8 right-8 flex gap-3">
           {featuredProducts.map((_, index) => (
             <button
               key={index}
@@ -95,13 +103,19 @@ const Hero = () => {
                 api?.scrollTo(index);
               }}
               className={cn(
-                "w-3 h-3 rounded-full transition-all duration-300",
+                "transition-all duration-300 p-1",
                 currentSlide === index 
-                  ? "bg-white scale-125" 
-                  : "bg-white/50 hover:bg-white/75"
+                  ? "text-white scale-125" 
+                  : "text-white/50 hover:text-white/75"
               )}
               aria-label={`Go to slide ${index + 1}`}
-            />
+            >
+              {currentSlide === index ? (
+                <SquareDot className="w-6 h-6" />
+              ) : (
+                <Square className="w-6 h-6" />
+              )}
+            </button>
           ))}
         </div>
       </Carousel>
