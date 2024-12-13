@@ -1,68 +1,77 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Autoplay from 'embla-carousel-autoplay';
 
 const Hero = () => {
   const { language } = useLanguage();
 
-  const content = {
-    en: {
-      title: 'Japan is nearby',
-      subtitle: 'Experience the perfect blend of Japanese quality and style with our curated selection of premium wheels.',
-      shopNow: 'Shop Now',
-      learnMore: 'Learn More'
+  const slides = [
+    {
+      image: "/lovable-uploads/6c732050-29e8-4a19-9e38-b0bc2bc22180.png",
+      title: language === 'ru' ? "НОВЫЙ HAVAL H3" : "NEW HAVAL H3",
+      subtitle: language === 'ru' ? "ВЫГОДА ДО 400 000 ₽" : "SAVE UP TO 400 000 ₽",
+      buttonText: language === 'ru' ? "ПОДРОБНЕЕ" : "LEARN MORE"
     },
-    ru: {
-      title: 'Япония рядом',
-      subtitle: 'Почувствуйте идеальное сочетание японского качества и стиля с нашей подборкой премиальных дисков.',
-      shopNow: 'Купить сейчас',
-      learnMore: 'Узнать больше'
-    }
-  };
+    // Можно добавить больше слайдов по аналогии
+  ];
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-white overflow-hidden">
-      {/* Фоновый градиент */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-50 to-white"></div>
-      </div>
-      
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Анимированный заголовок */}
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
-        >
-          {content[language].title}
-        </motion.h1>
-        
-        {/* Анимированный подзаголовок */}
-        <motion.p 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto"
-        >
-          {content[language].subtitle}
-        </motion.p>
-        
-        {/* Анимированные кнопки */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="flex justify-center space-x-4"
-        >
-          <button className="bg-black text-white px-8 py-3 rounded-full hover:bg-gray-900 transition-colors">
-            {content[language].shopNow}
-          </button>
-          <button className="bg-white text-black px-8 py-3 rounded-full border border-black hover:bg-gray-50 transition-colors">
-            {content[language].learnMore}
-          </button>
-        </motion.div>
-      </div>
+    <div className="relative min-h-screen">
+      <Carousel
+        opts={{
+          loop: true,
+        }}
+        plugins={[
+          Autoplay({
+            delay: 5000,
+          }),
+        ]}
+        className="w-full h-screen"
+      >
+        <CarouselContent>
+          {slides.map((slide, index) => (
+            <CarouselItem key={index} className="relative h-screen">
+              <div className="absolute inset-0">
+                <img 
+                  src={slide.image} 
+                  alt={slide.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
+              </div>
+              
+              <div className="relative h-full flex flex-col justify-center px-8 md:px-16 lg:px-24">
+                <motion.div 
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="max-w-xl text-white"
+                >
+                  <h1 className="text-4xl md:text-6xl font-bold mb-4">
+                    {slide.title}
+                  </h1>
+                  <p className="text-xl md:text-2xl mb-8">
+                    {slide.subtitle}
+                  </p>
+                  <button className="bg-transparent border-2 border-white text-white px-8 py-3 hover:bg-white hover:text-black transition-colors">
+                    {slide.buttonText}
+                  </button>
+                </motion.div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="left-4" />
+        <CarouselNext className="right-4" />
+      </Carousel>
     </div>
   );
 };
