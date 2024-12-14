@@ -45,13 +45,11 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
       
-      // Добавляем класс для подсветки
-      element.classList.add('highlight-product');
-      
-      // Убираем класс через 10 секунд
-      setTimeout(() => {
-        element.classList.remove('highlight-product');
-      }, 10000);
+      // Отправляем событие productSelected
+      const event = new CustomEvent('productSelected', {
+        detail: { productId: product.id.toString() }
+      });
+      window.dispatchEvent(event);
     }
 
     // Сбрасываем состояние поиска

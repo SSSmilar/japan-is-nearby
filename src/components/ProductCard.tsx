@@ -141,13 +141,20 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
     };
   }, [product.id]);
 
+  const hasStock = remainingStock > 0;
+  const shouldShowGreenHighlight = isHighlighted && hasStock;
+  const shouldShowRedHighlight = isHighlighted && !hasStock;
+
   return (
     <motion.div
       ref={cardRef}
       id={`product-${product.id}`}
       className={cn(
         'relative bg-white rounded-lg border p-4 transition-all duration-300 h-96',
-        isHighlighted || isHovered ? 'shadow-lg scale-[1.02] bg-gray-50 border-gray-900' : 'shadow-sm border-gray-200'
+        shouldShowGreenHighlight && 'shadow-lg scale-[1.02] bg-green-100 border-2 border-green-600',
+        shouldShowRedHighlight && 'shadow-lg scale-[1.02] bg-red-100 border-2 border-red-600',
+        (!isHighlighted && isHovered) && 'shadow-lg scale-[1.02] bg-gray-50 border-gray-200',
+        (!isHighlighted && !isHovered) && 'shadow-sm border-gray-200'
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

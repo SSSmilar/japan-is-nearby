@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import Slider from 'react-slick';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
@@ -12,65 +11,62 @@ interface SlideContent {
   price: string;
   productId: string;
   imageUrl: string;
+  diskIndex: number;
+  diskId: string;
 }
 
 const slides: SlideContent[] = [
-=======
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { motion } from 'framer-motion';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-const slides = [
->>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
   {
     id: '1',
     subtitle: 'ЭКСКЛЮЗИВНОЕ ИЗДАНИЕ',
     title: 'McLaren 765LT',
     price: 'ЦЕНА ОТ 4 999 ₽',
-<<<<<<< HEAD
-    imageUrl: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738',
-    productId: 'product1'
+    imageUrl: '/images/mclaren.jpg',
+    productId: 'disk1',
+    diskIndex: 0,
+    diskId: '1'
   },
   {
     id: '2',
     subtitle: 'СПЕЦИАЛЬНОЕ ИЗДАНИЕ',
-    title: 'Ferrari F8',
-    price: 'ЦЕНА ОТ 5 999 ₽',
-    imageUrl: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae',
-    productId: 'product2'
+    title: 'Porsche GT3 RS',
+    price: 'ЦЕНА ОТ 2 499 ₽',
+    imageUrl: '/lovable-uploads/a5f2788a-9f78-4f08-b8a4-9532530732a4.png',
+    productId: 'disk2',
+    diskIndex: 1,
+    diskId: '2'
   },
   {
     id: '3',
-    subtitle: 'КОЛЛЕКЦИОННЫЙ ВЫПУСК',
-    title: 'Lamborghini Aventador',
-    price: 'ЦЕНА ОТ 6 999 ₽',
-    imageUrl: 'https://images.unsplash.com/photo-1621135802920-133df287f89c',
-    productId: 'product3'
-=======
-    productId: 'product1',
-    image: '/images/mclaren.jpg'
+    subtitle: 'ПРЕМИУМ КОЛЛЕКЦИЯ',
+    title: 'Ferrari F8',
+    price: 'ЦЕНА ОТ 3 999 ₽',
+    imageUrl: '/images/ferrari.jpg',
+    productId: 'disk3',
+    diskIndex: 2,
+    diskId: '3'
   },
   {
-    id: '2',
-    subtitle: 'НОВОЕ ПОСТУПЛЕНИЕ',
-    title: 'Porsche GT3 RS',
-    price: 'ЦЕНА ОТ 2 499 ₽',
-    productId: 'product2',
-    image: '/lovable-uploads/a5f2788a-9f78-4f08-b8a4-9532530732a4.png'
->>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
+    id: '4',
+    subtitle: 'ЛИМИТИРОВАННАЯ СЕРИЯ',
+    title: 'Lamborghini Huracan',
+    price: 'ЦЕНА ОТ 5 499 ₽',
+    imageUrl: '/images/lambo.jpg',
+    productId: 'disk4',
+    diskIndex: 3,
+    diskId: '4'
   }
 ];
 
 export const ProductSlider = () => {
   const navigate = useNavigate();
 
-  const handleSlideClick = (productId: string) => {
-    navigate(`/catalog/${productId}`);
+  const handleSlideClick = (diskIndex: number, diskId: string) => {
+    navigate(`/disks?index=${diskIndex}`);
+    
+    // Активируем эффект наведения на товар
     const event = new CustomEvent('activate-product-hover', {
-      detail: { productId, duration: 10000 }
+      detail: { productId: diskId, duration: 10000 }
     });
     window.dispatchEvent(event);
   };
@@ -78,17 +74,17 @@ export const ProductSlider = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000,
+    autoplaySpeed: 6000,
     pauseOnHover: true,
     arrows: true,
     fade: true,
-    cssEase: 'linear',
+    cssEase: 'cubic-bezier(0.4, 0, 0.2, 1)',
     customPaging: () => (
-      <div className="w-8 h-1 bg-white/30 hover:bg-white/60 transition-colors" />
+      <div className="w-12 h-1.5 bg-white/20 hover:bg-white/40 transition-all duration-300 transform skew-x-[-20deg] hover:scale-110" />
     ),
   };
 
@@ -97,106 +93,50 @@ export const ProductSlider = () => {
       <Slider {...settings} className="h-full">
         {slides.map((slide) => (
           <div key={slide.id} className="relative h-[calc(100vh-64px)]">
-            <div 
-              className="absolute inset-0"
-              style={{ 
-<<<<<<< HEAD
-                backgroundImage: `url(${slide.imageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                width: '100vw',
-                height: '100%'
-=======
-                backgroundImage: `url(${slide.image})`,
->>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+            <div className="absolute inset-0">
+              <img
+                src={slide.imageUrl}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/40" />
             </div>
-            
-            <AnimatePresence>
-              <motion.div 
-                className="absolute top-[20%] left-[10%] text-white max-w-2xl z-10"
-                initial={{ opacity: 0, x: -50 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 50 }}
-                transition={{ duration: 0.8 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="absolute top-[20%] left-[10%] text-white max-w-2xl"
+            >
+              <h3 className="text-2xl font-light mb-4">{slide.subtitle}</h3>
+              <h2 className="text-7xl font-bold mb-6">{slide.title}</h2>
+              <p className="text-3xl font-light mb-8">{slide.price}</p>
+              <motion.button
+                onClick={() => handleSlideClick(slide.diskIndex, slide.diskId)}
+                className="px-10 py-4 border-2 border-white text-white text-xl hover:bg-white hover:text-black transition-colors duration-300 uppercase tracking-wider"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                <motion.h3 
-                  className="text-2xl font-light mb-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
-                >
-                  {slide.subtitle}
-                </motion.h3>
-                <motion.h2 
-                  className="text-7xl font-bold mb-6"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                >
-                  {slide.title}
-                </motion.h2>
-                <motion.p 
-                  className="text-3xl font-light mb-10"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                >
-                  {slide.price}
-                </motion.p>
-                <motion.button
-                  onClick={() => handleSlideClick(slide.productId)}
-                  className="px-10 py-4 border-2 border-white text-white text-xl hover:bg-white hover:text-black transition-colors duration-300 uppercase tracking-wider"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 }}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Подробнее
-                </motion.button>
-              </motion.div>
-            </AnimatePresence>
+                Подробнее
+              </motion.button>
+            </motion.div>
           </div>
         ))}
       </Slider>
 
       <style jsx global>{`
-        .slick-slider {
-          position: relative;
-          height: 100%;
-          width: 100vw;
-        }
-        .slick-list {
-          height: 100%;
-          overflow: hidden;
-        }
-        .slick-track {
-          height: 100%;
-          display: flex;
-        }
-        .slick-slide {
-          height: 100%;
-          width: 100vw !important;
-        }
-        .slick-slide > div {
-          height: 100%;
-          width: 100vw;
-        }
         .slick-dots {
           bottom: 40px !important;
           z-index: 20;
           display: flex !important;
           justify-content: center;
-          gap: 10px;
+          gap: 12px;
           padding: 0 20px;
         }
         .slick-dots li {
           width: auto !important;
           height: auto !important;
           margin: 0 !important;
+          transition: all 0.3s ease;
         }
         .slick-dots li button {
           padding: 0 !important;
@@ -204,37 +144,11 @@ export const ProductSlider = () => {
         .slick-dots li button:before {
           display: none;
         }
-        .slick-prev, .slick-next {
-          width: 40px !important;
-          height: 40px !important;
-          z-index: 10 !important;
-          background: transparent !important;
-          transition: transform 0.3s ease !important;
-        }
-        .slick-prev:hover, .slick-next:hover {
-          transform: scale(1.2) !important;
-        }
-        .slick-prev {
-          left: 30px !important;
-        }
-        .slick-next {
-          right: 30px !important;
-        }
-        .slick-prev:before {
-          content: '❮' !important;
-          font-size: 32px !important;
-          opacity: 0.5 !important;
-          transition: opacity 0.3s ease !important;
-        }
-        .slick-next:before {
-          content: '❯' !important;
-          font-size: 32px !important;
-          opacity: 0.5 !important;
-          transition: opacity 0.3s ease !important;
-        }
-        .slick-prev:hover:before,
-        .slick-next:hover:before {
-          opacity: 1 !important;
+        .slick-dots li.slick-active div {
+          background-color: rgb(255 255 255 / 0.9) !important;
+          width: 48px !important;
+          transform: skew-x(-20deg) scale(1.1) !important;
+          box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
       `}</style>
     </div>
