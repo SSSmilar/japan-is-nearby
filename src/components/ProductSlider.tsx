@@ -6,48 +6,23 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
-// Импортируем изображения
-import slide1Img from '/images/slide1.jpg';
-import slide2Img from '/images/slide2.jpg';
-import slide3Img from '/images/slide3.jpg';
-
-interface SlideContent {
-  id: string;
-  subtitle: string;
-  title: string;
-  price: string;
-  productId: string;
-}
-
-const slides: SlideContent[] = [
+const slides = [
   {
     id: '1',
     subtitle: 'ЭКСКЛЮЗИВНОЕ ИЗДАНИЕ',
     title: 'McLaren 765LT',
     price: 'ЦЕНА ОТ 4 999 ₽',
-    productId: 'product1'
+    productId: 'product1',
+    image: '/images/mclaren.jpg'
   },
   {
     id: '2',
     subtitle: 'НОВОЕ ПОСТУПЛЕНИЕ',
-    title: 'Pink Floyd',
+    title: 'Porsche GT3 RS',
     price: 'ЦЕНА ОТ 2 499 ₽',
-    productId: 'product2'
-  },
-  {
-    id: '3',
-    subtitle: 'СПЕЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ',
-    title: 'The Beatles',
-    price: 'ЦЕНА ОТ 1 999 ₽',
-    productId: 'product3'
-  },
-  {
-    id: '4',
-    subtitle: 'КОЛЛЕКЦИОННОЕ ИЗДАНИЕ',
-    title: 'Led Zeppelin',
-    price: 'ЦЕНА ОТ 3 499 ₽',
-    productId: 'product4'
-  },
+    productId: 'product2',
+    image: '/lovable-uploads/a5f2788a-9f78-4f08-b8a4-9532530732a4.png'
+  }
 ];
 
 export const ProductSlider = () => {
@@ -84,7 +59,7 @@ export const ProductSlider = () => {
             <div 
               className="relative w-full h-full bg-cover bg-center bg-no-repeat"
               style={{ 
-                backgroundImage: `url(${import.meta.env.BASE_URL}images/mclaren.jpg)`,
+                backgroundImage: `url(${slide.image})`,
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
