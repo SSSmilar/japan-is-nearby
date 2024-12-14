@@ -35,7 +35,7 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
   // Оставшееся количество товара с учетом корзины
   const remainingStock = availableStock - cartQuantity;
 
-  // Парсим цену из строки
+  // Парсим цену из строки и преобразуем в число
   const basePrice = useMemo(() => {
     const match = product.price.match(/\d+/g);
     return match ? parseInt(match.join('')) : 0;
