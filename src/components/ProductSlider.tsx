@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+<<<<<<< HEAD
 import Slider from 'react-slick';
 import { motion, AnimatePresence } from 'framer-motion';
 import 'slick-carousel/slick/slick.css';
@@ -14,11 +15,22 @@ interface SlideContent {
 }
 
 const slides: SlideContent[] = [
+=======
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { motion } from 'framer-motion';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+
+const slides = [
+>>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
   {
     id: '1',
     subtitle: 'ЭКСКЛЮЗИВНОЕ ИЗДАНИЕ',
     title: 'McLaren 765LT',
     price: 'ЦЕНА ОТ 4 999 ₽',
+<<<<<<< HEAD
     imageUrl: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738',
     productId: 'product1'
   },
@@ -37,6 +49,18 @@ const slides: SlideContent[] = [
     price: 'ЦЕНА ОТ 6 999 ₽',
     imageUrl: 'https://images.unsplash.com/photo-1621135802920-133df287f89c',
     productId: 'product3'
+=======
+    productId: 'product1',
+    image: '/images/mclaren.jpg'
+  },
+  {
+    id: '2',
+    subtitle: 'НОВОЕ ПОСТУПЛЕНИЕ',
+    title: 'Porsche GT3 RS',
+    price: 'ЦЕНА ОТ 2 499 ₽',
+    productId: 'product2',
+    image: '/lovable-uploads/a5f2788a-9f78-4f08-b8a4-9532530732a4.png'
+>>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
   }
 ];
 
@@ -76,11 +100,15 @@ export const ProductSlider = () => {
             <div 
               className="absolute inset-0"
               style={{ 
+<<<<<<< HEAD
                 backgroundImage: `url(${slide.imageUrl})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 width: '100vw',
                 height: '100%'
+=======
+                backgroundImage: `url(${slide.image})`,
+>>>>>>> cd5ba499b3724a79ebd696a8ab46645f410b855e
               }}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
