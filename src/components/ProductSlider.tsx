@@ -1,15 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination, Autoplay } from 'swiper/modules';
-import { motion } from 'framer-motion';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-
-// Импортируем изображения
-import slide1Img from '/images/slide1.jpg';
-import slide2Img from '/images/slide2.jpg';
-import slide3Img from '/images/slide3.jpg';
+import Slider from 'react-slick';
+import { motion, AnimatePresence } from 'framer-motion';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 interface SlideContent {
   id: string;
@@ -17,6 +10,7 @@ interface SlideContent {
   title: string;
   price: string;
   productId: string;
+  imageUrl: string;
 }
 
 const slides: SlideContent[] = [
@@ -25,29 +19,25 @@ const slides: SlideContent[] = [
     subtitle: 'ЭКСКЛЮЗИВНОЕ ИЗДАНИЕ',
     title: 'McLaren 765LT',
     price: 'ЦЕНА ОТ 4 999 ₽',
+    imageUrl: 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738',
     productId: 'product1'
   },
   {
     id: '2',
-    subtitle: 'НОВОЕ ПОСТУПЛЕНИЕ',
-    title: 'Pink Floyd',
-    price: 'ЦЕНА ОТ 2 499 ₽',
+    subtitle: 'СПЕЦИАЛЬНОЕ ИЗДАНИЕ',
+    title: 'Ferrari F8',
+    price: 'ЦЕНА ОТ 5 999 ₽',
+    imageUrl: 'https://images.unsplash.com/photo-1592198084033-aade902d1aae',
     productId: 'product2'
   },
   {
     id: '3',
-    subtitle: 'СПЕЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ',
-    title: 'The Beatles',
-    price: 'ЦЕНА ОТ 1 999 ₽',
+    subtitle: 'КОЛЛЕКЦИОННЫЙ ВЫПУСК',
+    title: 'Lamborghini Aventador',
+    price: 'ЦЕНА ОТ 6 999 ₽',
+    imageUrl: 'https://images.unsplash.com/photo-1621135802920-133df287f89c',
     productId: 'product3'
-  },
-  {
-    id: '4',
-    subtitle: 'КОЛЛЕКЦИОННОЕ ИЗДАНИЕ',
-    title: 'Led Zeppelin',
-    price: 'ЦЕНА ОТ 3 499 ₽',
-    productId: 'product4'
-  },
+  }
 ];
 
 export const ProductSlider = () => {
@@ -61,57 +51,164 @@ export const ProductSlider = () => {
     window.dispatchEvent(event);
   };
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    pauseOnHover: true,
+    arrows: true,
+    fade: true,
+    cssEase: 'linear',
+    customPaging: () => (
+      <div className="w-8 h-1 bg-white/30 hover:bg-white/60 transition-colors" />
+    ),
+  };
+
   return (
-    <div className="relative w-full h-[600px] bg-gray-900">
-      <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        navigation={{
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev',
-        }}
-        pagination={{
-          clickable: true,
-          el: '.swiper-pagination',
-          bulletClass: 'swiper-pagination-bullet',
-          bulletActiveClass: 'swiper-pagination-bullet-active',
-        }}
-        autoplay={{ delay: 5000, disableOnInteraction: false }}
-        loop={true}
-        className="h-full"
-      >
+    <div className="relative h-[calc(100vh-64px)] -mx-[calc((100vw-100%)/2)] w-screen overflow-hidden">
+      <Slider {...settings} className="h-full">
         {slides.map((slide) => (
-          <SwiperSlide key={slide.id}>
+          <div key={slide.id} className="relative h-[calc(100vh-64px)]">
             <div 
-              className="relative w-full h-full bg-cover bg-center bg-no-repeat"
+              className="absolute inset-0"
               style={{ 
-                backgroundImage: `url(${import.meta.env.BASE_URL}images/mclaren.jpg)`,
+                backgroundImage: `url(${slide.imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                width: '100vw',
+                height: '100%'
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/40 to-transparent" />
+            </div>
+            
+            <AnimatePresence>
               <motion.div 
-                className="absolute top-1/4 left-[10%] text-white max-w-xl"
+                className="absolute top-[20%] left-[10%] text-white max-w-2xl z-10"
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 50 }}
                 transition={{ duration: 0.8 }}
               >
-                <h3 className="text-2xl font-light mb-2">{slide.subtitle}</h3>
-                <h2 className="text-6xl font-bold mb-4">{slide.title}</h2>
-                <p className="text-2xl font-light mb-8">{slide.price}</p>
-                <button
+                <motion.h3 
+                  className="text-2xl font-light mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  {slide.subtitle}
+                </motion.h3>
+                <motion.h2 
+                  className="text-7xl font-bold mb-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  {slide.title}
+                </motion.h2>
+                <motion.p 
+                  className="text-3xl font-light mb-10"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  {slide.price}
+                </motion.p>
+                <motion.button
                   onClick={() => handleSlideClick(slide.productId)}
-                  className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-black transition-colors duration-300 text-lg uppercase tracking-wider"
+                  className="px-10 py-4 border-2 border-white text-white text-xl hover:bg-white hover:text-black transition-colors duration-300 uppercase tracking-wider"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Подробнее
-                </button>
+                </motion.button>
               </motion.div>
-            </div>
-          </SwiperSlide>
+            </AnimatePresence>
+          </div>
         ))}
-      </Swiper>
-      
-      <div className="swiper-button-prev !text-white !left-8" />
-      <div className="swiper-button-next !text-white !right-8" />
-      <div className="swiper-pagination !bottom-8" />
+      </Slider>
+
+      <style jsx global>{`
+        .slick-slider {
+          position: relative;
+          height: 100%;
+          width: 100vw;
+        }
+        .slick-list {
+          height: 100%;
+          overflow: hidden;
+        }
+        .slick-track {
+          height: 100%;
+          display: flex;
+        }
+        .slick-slide {
+          height: 100%;
+          width: 100vw !important;
+        }
+        .slick-slide > div {
+          height: 100%;
+          width: 100vw;
+        }
+        .slick-dots {
+          bottom: 40px !important;
+          z-index: 20;
+          display: flex !important;
+          justify-content: center;
+          gap: 10px;
+          padding: 0 20px;
+        }
+        .slick-dots li {
+          width: auto !important;
+          height: auto !important;
+          margin: 0 !important;
+        }
+        .slick-dots li button {
+          padding: 0 !important;
+        }
+        .slick-dots li button:before {
+          display: none;
+        }
+        .slick-prev, .slick-next {
+          width: 40px !important;
+          height: 40px !important;
+          z-index: 10 !important;
+          background: transparent !important;
+          transition: transform 0.3s ease !important;
+        }
+        .slick-prev:hover, .slick-next:hover {
+          transform: scale(1.2) !important;
+        }
+        .slick-prev {
+          left: 30px !important;
+        }
+        .slick-next {
+          right: 30px !important;
+        }
+        .slick-prev:before {
+          content: '❮' !important;
+          font-size: 32px !important;
+          opacity: 0.5 !important;
+          transition: opacity 0.3s ease !important;
+        }
+        .slick-next:before {
+          content: '❯' !important;
+          font-size: 32px !important;
+          opacity: 0.5 !important;
+          transition: opacity 0.3s ease !important;
+        }
+        .slick-prev:hover:before,
+        .slick-next:hover:before {
+          opacity: 1 !important;
+        }
+      `}</style>
     </div>
   );
 };
