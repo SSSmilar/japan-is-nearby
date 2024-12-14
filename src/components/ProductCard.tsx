@@ -5,6 +5,9 @@ import { cn } from '@/lib/utils';
 import { Plus, Minus } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
+import ProductImage from './ProductImage';
+import ProductRating from './ProductRating';
+import { parsePrice, formatPrice } from '../utils/priceUtils';
 
 export interface ProductCardProps {
   product: Product;
@@ -20,51 +23,28 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
   const { addToCart, items } = useCart();
   const navigate = useNavigate();
 
-  // Получаем количество товара в корзине
   const cartQuantity = useMemo(() => {
     const cartItem = items.find(item => item.product.id === product.id);
     return cartItem ? cartItem.quantity : 0;
   }, [items, product.id]);
 
-  // Парсим количество доступного товара из строки
   const availableStock = useMemo(() => {
     const match = product.stock.match(/\d+/);
-    return match ? parseInt(match[0]) : 0;
+    return match ? parseInt(match[0], 10) : 0;
   }, [product.stock]);
 
-  // Оставшееся количество товара с учетом корзины
   const remainingStock = availableStock - cartQuantity;
 
-  // Парсим цену из строки и преобразуем в число
-  const basePrice = useMemo(() => {
-    const match = product.price.match(/\d+/g);
-    return match ? parseInt(match.join('')) : 0;
-  }, [product.price]);
+  const basePrice = useMemo(() => parsePrice(product.price), [product.price]);
 
-  // Вычисляем общую сумму
-  const totalPrice = useMemo(() => {
-    return basePrice * quantity;
-  }, [basePrice, quantity]);
-
-  // Форматируем цену
-  const formatPrice = (price: number) => {
-    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' ₽';
-  };
+  const totalPrice = useMemo(() => basePrice * quantity, [basePrice, quantity]);
 
   const handleIncrement = () => {
     const newQuantity = quantity + 2;
     if (newQuantity <= remainingStock) {
       setQuantity(newQuantity);
     } else {
-      // Показываем уведомление о превышении доступного количества
-      const notification = document.createElement('div');
-      notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-      notification.textContent = 'Превышено доступное количество товара';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      showNotification('Превышено доступное количество товара', 'error');
     }
   };
 
@@ -72,31 +52,27 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
     setQuantity(prev => Math.max(4, prev - 2));
   };
 
+  const showNotification = (message: string, type: 'success' | 'error') => {
+    const notification = document.createElement('div');
+    notification.className = `fixed bottom-4 right-4 ${
+      type === 'success' ? 'bg-green-500' : 'bg-red-500'
+    } text-white px-4 py-2 rounded-lg shadow-lg z-50`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.remove();
+    }, 3000);
+  };
+
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     
     if (quantity <= remainingStock) {
       addToCart(product, quantity);
-      
-      // Показываем уведомление об успешном добавлении
-      const notification = document.createElement('div');
-      notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-      notification.textContent = 'Товар добавлен в корзину';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      showNotification('Товар добавлен в корзину', 'success');
     } else {
-      // Показываем уведомление о превышении доступного количества
-      const notification = document.createElement('div');
-      notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-      notification.textContent = 'Недостаточно товара в наличии';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      showNotification('Недостаточно товара в наличии', 'error');
     }
   };
 
@@ -106,30 +82,19 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
       addToCart(product, quantity);
       navigate('/checkout');
     } else {
-      // Показываем уведомление о превышении доступного количества
-      const notification = document.createElement('div');
-      notification.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
-      notification.textContent = 'Недостаточно товара в наличии';
-      document.body.appendChild(notification);
-      
-      setTimeout(() => {
-        notification.remove();
-      }, 3000);
+      showNotification('Недостаточно товара в наличии', 'error');
     }
   };
 
   useEffect(() => {
-    // Слушаем событие активации hover эффекта
     const handleActivateHover = (event: CustomEvent<{ productId: string; duration: number }>) => {
-      if (event.detail.productId === product.id) {
+      if (event.detail.productId === product.id.toString()) {
         setIsHighlighted(true);
         
-        // Очищаем предыдущий таймер если он есть
         if (highlightTimeoutRef.current) {
           window.clearTimeout(highlightTimeoutRef.current);
         }
         
-        // Устанавливаем новый таймер
         highlightTimeoutRef.current = window.setTimeout(() => {
           setIsHighlighted(false);
         }, event.detail.duration);
@@ -148,7 +113,7 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
 
   useEffect(() => {
     const handleProductSelect = (event: CustomEvent) => {
-      if (event.detail.productId === product.id) {
+      if (event.detail.productId === product.id.toString()) {
         if (highlightTimeoutRef.current) {
           window.clearTimeout(highlightTimeoutRef.current);
         }
@@ -193,36 +158,17 @@ const ProductCard = ({ product, isSelected = false }: ProductCardProps) => {
         ease: "easeInOut"
       }}
     >
-      <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
-        <img
-          src={product.image}
-          alt={product.name}
-          className={cn(
-            'h-full w-full object-cover transition-transform duration-300',
-            isHighlighted || isHovered ? 'scale-105' : ''
-          )}
-        />
-      </div>
+      <ProductImage
+        src={product.image}
+        alt={product.name}
+        isHighlighted={isHighlighted}
+        isHovered={isHovered}
+      />
+      
       <div className="mt-4">
         <h3 className="text-sm font-medium text-gray-900">{product.name}</h3>
-        <div className="mt-2 flex items-center">
-          <div className="flex items-center">
-            {[...Array(Math.floor(product.rating))].map((_, i) => (
-              <svg
-                key={i}
-                className="h-4 w-4 text-yellow-400"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 15.934l-6.18 3.254 1.18-6.875L.083 7.571l6.9-1.002L10 .333l3.017 6.236 6.9 1.002-4.917 4.742 1.18 6.875L10 15.934z"
-                />
-              </svg>
-            ))}
-          </div>
-          <p className="ml-2 text-sm text-gray-500">({product.reviews})</p>
-        </div>
+        <ProductRating rating={product.rating} reviews={product.reviews} />
+        
         <div className="mt-2 flex justify-between items-center">
           <p className="text-sm text-gray-500">{product.price}</p>
           <p className="text-sm font-medium text-green-600">{product.stock}</p>
