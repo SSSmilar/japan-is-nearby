@@ -1,147 +1,117 @@
-import React from 'react';
-import { useKeenSlider } from 'keen-slider/react';
-import 'keen-slider/keen-slider.min.css';
-import { Product } from '../types/product';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { cn } from '../lib/utils';
+import { useNavigate } from 'react-router-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import { motion } from 'framer-motion';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 
-interface ProductSliderProps {
-  products: Product[];
+// Импортируем изображения
+import slide1Img from '/images/slide1.jpg';
+import slide2Img from '/images/slide2.jpg';
+import slide3Img from '/images/slide3.jpg';
+
+interface SlideContent {
+  id: string;
+  subtitle: string;
+  title: string;
+  price: string;
+  productId: string;
 }
 
-const ProductSlider = ({ products }: ProductSliderProps) => {
-  const location = useLocation();
+const slides: SlideContent[] = [
+  {
+    id: '1',
+    subtitle: 'ЭКСКЛЮЗИВНОЕ ИЗДАНИЕ',
+    title: 'McLaren 765LT',
+    price: 'ЦЕНА ОТ 4 999 ₽',
+    productId: 'product1'
+  },
+  {
+    id: '2',
+    subtitle: 'НОВОЕ ПОСТУПЛЕНИЕ',
+    title: 'Pink Floyd',
+    price: 'ЦЕНА ОТ 2 499 ₽',
+    productId: 'product2'
+  },
+  {
+    id: '3',
+    subtitle: 'СПЕЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ',
+    title: 'The Beatles',
+    price: 'ЦЕНА ОТ 1 999 ₽',
+    productId: 'product3'
+  },
+  {
+    id: '4',
+    subtitle: 'КОЛЛЕКЦИОННОЕ ИЗДАНИЕ',
+    title: 'Led Zeppelin',
+    price: 'ЦЕНА ОТ 3 499 ₽',
+    productId: 'product4'
+  },
+];
+
+export const ProductSlider = () => {
   const navigate = useNavigate();
-  const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [loaded, setLoaded] = React.useState(false);
 
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    initial: 0,
-    slides: {
-      perView: 4,
-      spacing: 20,
-    },
-    slideChanged(slider) {
-      setCurrentSlide(slider.track.details.rel);
-    },
-    created() {
-      setLoaded(true);
-    },
-    breakpoints: {
-      '(max-width: 1024px)': {
-        slides: { perView: 3, spacing: 15 },
-      },
-      '(max-width: 768px)': {
-        slides: { perView: 2, spacing: 10 },
-      },
-      '(max-width: 640px)': {
-        slides: { perView: 1, spacing: 10 },
-      },
-    },
-  });
-
-  const handleProductClick = (product: Product) => {
-    if (location.pathname !== '/catalog') {
-      navigate(`/catalog#product-${product.id}`);
-    } else {
-      const element = document.getElementById(`product-${product.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        
-        // Добавляем класс для подсветки
-        element.classList.add('highlight-product');
-        
-        // Убираем класс через 10 секунд
-        setTimeout(() => {
-          element.classList.remove('highlight-product');
-        }, 10000);
-      }
-    }
+  const handleSlideClick = (productId: string) => {
+    navigate(`/catalog/${productId}`);
+    const event = new CustomEvent('activate-product-hover', {
+      detail: { productId, duration: 10000 }
+    });
+    window.dispatchEvent(event);
   };
 
   return (
-    <div className="relative">
-      <div ref={sliderRef} className="keen-slider">
-        {products.map((product) => (
-          <div
-            key={product.id}
-            className="keen-slider__slide cursor-pointer"
-            onClick={() => handleProductClick(product)}
-          >
-            <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-all duration-300 p-4">
-              <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
-                />
-              </div>
-              <div className="mt-4">
-                <h3 className="text-sm font-medium text-gray-900 truncate">
-                  {product.name}
-                </h3>
-                <p className="mt-1 text-sm text-gray-500">{product.price}</p>
-                <div className="mt-2 flex items-center">
-                  <div className="flex items-center">
-                    {[...Array(Math.floor(product.rating))].map((_, i) => (
-                      <svg
-                        key={i}
-                        className="h-4 w-4 text-yellow-400"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 15.934l-6.18 3.254 1.18-6.875L.083 7.571l6.9-1.002L10 .333l3.017 6.236 6.9 1.002-4.917 4.742 1.18 6.875L10 15.934z"
-                        />
-                      </svg>
-                    ))}
-                  </div>
-                  <p className="ml-2 text-sm text-gray-500">({product.reviews})</p>
-                </div>
-                <p className="mt-2 text-sm font-medium text-green-600">
-                  {product.stock}
-                </p>
-              </div>
+    <div className="relative w-full h-[600px] bg-gray-900">
+      <Swiper
+        modules={[Navigation, Pagination, Autoplay]}
+        navigation={{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }}
+        pagination={{
+          clickable: true,
+          el: '.swiper-pagination',
+          bulletClass: 'swiper-pagination-bullet',
+          bulletActiveClass: 'swiper-pagination-bullet-active',
+        }}
+        autoplay={{ delay: 5000, disableOnInteraction: false }}
+        loop={true}
+        className="h-full"
+      >
+        {slides.map((slide) => (
+          <SwiperSlide key={slide.id}>
+            <div 
+              className="relative w-full h-full bg-cover bg-center bg-no-repeat"
+              style={{ 
+                backgroundImage: `url(${import.meta.env.BASE_URL}images/mclaren.jpg)`,
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+              <motion.div 
+                className="absolute top-1/4 left-[10%] text-white max-w-xl"
+                initial={{ opacity: 0, x: -50 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.8 }}
+              >
+                <h3 className="text-2xl font-light mb-2">{slide.subtitle}</h3>
+                <h2 className="text-6xl font-bold mb-4">{slide.title}</h2>
+                <p className="text-2xl font-light mb-8">{slide.price}</p>
+                <button
+                  onClick={() => handleSlideClick(slide.productId)}
+                  className="px-8 py-3 border-2 border-white text-white hover:bg-white hover:text-black transition-colors duration-300 text-lg uppercase tracking-wider"
+                >
+                  Подробнее
+                </button>
+              </motion.div>
             </div>
-          </div>
+          </SwiperSlide>
         ))}
-      </div>
-
-      {loaded && instanceRef.current && (
-        <>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              instanceRef.current?.prev();
-            }}
-            className={cn(
-              "absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors",
-              currentSlide === 0 && "opacity-50 cursor-not-allowed"
-            )}
-            disabled={currentSlide === 0}
-          >
-            <ChevronLeft className="w-6 h-6" />
-          </button>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              instanceRef.current?.next();
-            }}
-            className={cn(
-              "absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center text-gray-600 hover:text-gray-900 transition-colors",
-              currentSlide === instanceRef.current.track.details.maxIdx && "opacity-50 cursor-not-allowed"
-            )}
-            disabled={currentSlide === instanceRef.current.track.details.maxIdx}
-          >
-            <ChevronRight className="w-6 h-6" />
-          </button>
-        </>
-      )}
+      </Swiper>
+      
+      <div className="swiper-button-prev !text-white !left-8" />
+      <div className="swiper-button-next !text-white !right-8" />
+      <div className="swiper-pagination !bottom-8" />
     </div>
   );
 };
-
-export default ProductSlider;
