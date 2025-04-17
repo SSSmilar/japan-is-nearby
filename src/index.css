@@ -92,7 +92,7 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-[hsl(var(--border))];
   }
 
   body {
@@ -151,4 +151,26 @@
 .swiper-button-prev::after,
 .swiper-button-next::after {
   font-size: 24px !important;
+}
+
+/* Кастомные стили для выпадающего списка */
+select option {
+  background-color: white;
+  padding: 0.5rem 1rem;
+  border: 1px solid #e5e7eb;
+  margin: -1px;
+}
+
+select option:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+select option:hover {
+  background-color: #f3f4f6;
+}
+
+/* Стили для выбранной опции */
+select option:checked {
+  background-color: #eff6ff;
+  color: #1d4ed8;
 }

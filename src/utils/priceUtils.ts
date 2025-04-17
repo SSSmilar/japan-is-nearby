@@ -1,5 +1,7 @@
-export const parsePrice = (priceString: string): number => {
-  const match = priceString.match(/\d+/g);
+export const parsePrice = (price: string | number): number => {
+  if (typeof price === 'number') return price;
+
+  const match = price.match(/\d+/g);
   return match ? parseInt(match.join('')) : 0;
 };
 

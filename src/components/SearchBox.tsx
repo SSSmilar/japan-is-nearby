@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Search } from 'lucide-react';
 import { Product } from '../types/product';
 import { cn } from '../lib/utils';
@@ -63,7 +63,7 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
   };
 
   return (
-    <div ref={searchRef} className="relative">
+    <div ref={searchRef} className={cn("relative", className)}>
       <div className={cn(
         'flex items-center transition-all duration-300',
         isExpanded ? 'w-64' : 'w-40'
@@ -91,15 +91,21 @@ const SearchBox = ({ products, onProductSelect, className }: SearchBoxProps) => 
                 className="flex items-center gap-3 px-4 py-2 hover:bg-gray-100 cursor-pointer"
               >
                 <div className="w-12 h-12 flex-shrink-0 rounded-md overflow-hidden bg-gray-50">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
+                  {product.images && product.images.length > 0 && (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="font-medium truncate">{product.name}</div>
-                  <div className="text-sm text-gray-500">{product.price}</div>
+                  <div className="text-sm text-gray-500">{new Intl.NumberFormat('ru-RU', {
+                    style: 'currency',
+                    currency: 'RUB',
+                    maximumFractionDigits: 0
+                  }).format(product.price)}</div>
                 </div>
               </div>
             ))

@@ -1,80 +1,76 @@
-import React from 'react';
-import Logo from './Logo';
-import { Globe } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import Logo from './Logo';
+import { products } from '../data/products';
 import SearchBox from './SearchBox';
-import { products } from './ProductGrid';
 import CartIcon from './CartIcon';
+import { Globe } from 'lucide-react';
+import { Product } from '../types/product';
 
 const Navbar = () => {
-  const { language, toggleLanguage } = useLanguage();
   const location = useLocation();
+  const { language, toggleLanguage } = useLanguage();
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  const content = {
-    en: {
-      wheels: 'Wheels',
-      delivery: 'Delivery'
-    },
-    ru: {
-      wheels: 'Диски',
-      delivery: 'Доставка'
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleProductSelect = (product: Product) => {
+    const element = document.getElementById(`product-${product.id}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      element.classList.add('highlight-product');
+      setTimeout(() => {
+        element.classList.remove('highlight-product');
+      }, 1500);
     }
   };
 
-  const handleProductSelect = (product: any) => {
-    if (location.pathname !== '/catalog') {
-      window.location.href = `/catalog#product-${product.id}`;
-    } else {
-      const element = document.getElementById(`product-${product.id}`);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        // Имитация наведения мыши
-        const event = new MouseEvent('mouseenter', {
-          bubbles: true,
-          cancelable: true,
-        });
-        element.dispatchEvent(event);
-      }
-    }
-  };
+  const navLinks = [
+    { path: '/', label: language === 'ru' ? 'Главная' : 'Home' },
+    { path: '/catalog', label: language === 'ru' ? 'Каталог' : 'Catalog' },
+    { path: '/delivery', label: language === 'ru' ? 'Доставка' : 'Delivery' },
+    { path: '/reviews', label: language === 'ru' ? 'Отзывы' : 'Reviews' },
+  ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-white/80 backdrop-blur-md z-50 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+      <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center space-x-2">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center">
               <Logo />
-              <span className="font-medium text-lg">Japan is nearby</span>
             </Link>
-          </div>
-          
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/catalog" className="text-gray-900 hover:text-gray-600 transition-colors">
-              {content[language].wheels}
-            </Link>
-            <Link to="/delivery" className="text-gray-900 hover:text-gray-600 transition-colors">
-              {content[language].delivery}
-            </Link>
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <SearchBox 
-              products={products}
-              onProductSelect={handleProductSelect}
-              className="w-64"
-            />
-            <div className="flex items-center">
-              <CartIcon />
+            <div className="hidden md:flex items-center gap-6">
+              {navLinks.map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={`text-sm font-medium transition-colors hover:text-gray-900 ${
+                    location.pathname === path ? 'text-gray-900' : 'text-gray-600'
+                  }`}
+                >
+                  {label}
+                </Link>
+              ))}
             </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <SearchBox products={products} onProductSelect={handleProductSelect} />
             <button
               onClick={toggleLanguage}
-              className="flex items-center space-x-1 text-gray-500 hover:text-gray-900 transition-colors"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <Globe className="w-5 h-5" />
-              <span className="text-sm font-medium">{language.toUpperCase()}</span>
+              <Globe className="w-5 h-5 text-gray-600" />
             </button>
+            <CartIcon />
           </div>
         </div>
       </div>

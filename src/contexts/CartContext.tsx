@@ -1,60 +1,58 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { Product } from '../types/product';
-
-interface CartItem {
-  product: Product;
-  quantity: number;
-}
-
-interface CartContextType {
-  items: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: number) => void;
-  clearCart: () => void;
-}
+import { createContext, useContext, useState, useEffect, type FC, type ReactNode } from 'react';
+import { Product, CartContextType } from '../types/product';
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>(() => {
-    // Загрузка корзины из localStorage при инициализации
+export const CartProvider: FC<{ children: ReactNode }> = ({ children }) => {
+  const [cart, setCart] = useState<Record<string, number>>(() => {
     const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    return savedCart ? JSON.parse(savedCart) : {};
   });
 
-  // Сохранение корзины в localStorage при изменении
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(items));
-  }, [items]);
+    localStorage.setItem('cart', JSON.stringify(cart));
+  }, [cart]);
 
-  const addToCart = (product: Product, quantity: number) => {
-    setItems(prevItems => {
-      const existingItem = prevItems.find(item => item.product.id === product.id);
-      
-      if (existingItem) {
-        // Обновляем количество существующего товара
-        return prevItems.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity }
-            : item
-        );
-      }
-      
-      // Добавляем новый товар
-      return [...prevItems, { product, quantity }];
+  const addToCart = (variantId: string, quantity: number) => {
+    setCart(prev => ({
+      ...prev,
+      [variantId]: (prev[variantId] || 0) + quantity
+    }));
+  };
+
+  const removeFromCart = (variantId: string) => {
+    setCart(prev => {
+      const { [variantId]: _, ...rest } = prev;
+      return rest;
     });
   };
 
-  const removeFromCart = (productId: number) => {
-    setItems(prevItems => prevItems.filter(item => item.product.id !== productId));
+  const updateQuantity = (variantId: string, quantity: number) => {
+    setCart(prev => ({
+      ...prev,
+      [variantId]: quantity
+    }));
+  };
+
+  const getCartQuantity = (variantId: string) => {
+    return cart[variantId] || 0;
   };
 
   const clearCart = () => {
-    setItems([]);
+    setCart({});
   };
 
   return (
-    <CartContext.Provider value={{ items, addToCart, removeFromCart, clearCart }}>
+    <CartContext.Provider 
+      value={{ 
+        cart, 
+        addToCart, 
+        removeFromCart, 
+        updateQuantity, 
+        getCartQuantity, 
+        clearCart 
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

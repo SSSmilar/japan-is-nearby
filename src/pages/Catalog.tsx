@@ -1,16 +1,10 @@
-import React from 'react';
-import Navbar from '../components/Navbar';
 import ProductGrid from '../components/ProductGrid';
 
-const Catalog = () => {
+export default function Catalog() {
   return (
-    <div className="min-h-screen bg-white pt-16">
-      <Navbar />
-      <div className="container mx-auto px-4 py-8">
-        <ProductGrid />
-      </div>
+    <div className="w-full max-w-7xl mx-auto px-4 py-8 mt-16">
+      <h1 className="text-3xl font-bold mb-8">Каталог дисков</h1>
+      <ProductGrid />
     </div>
   );
-};
-
-export default Catalog;
+}

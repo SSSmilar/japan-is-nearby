@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, type ReactNode } from 'react';
 import { Product } from '../types/product';
 
 interface SelectedProductContextType {
@@ -6,21 +6,14 @@ interface SelectedProductContextType {
   setSelectedProduct: (product: Product | null) => void;
 }
 
+interface SelectedProductProviderProps {
+  children: ReactNode;
+}
+
 const SelectedProductContext = createContext<SelectedProductContextType | undefined>(undefined);
 
-export const SelectedProductProvider = ({ children }: { children: React.ReactNode }) => {
+export const SelectedProductProvider = ({ children }: SelectedProductProviderProps) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  useEffect(() => {
-    if (selectedProduct) {
-      // Clear selection after 10 seconds
-      const timeout = setTimeout(() => {
-        setSelectedProduct(null);
-      }, 10000);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [selectedProduct]);
 
   return (
     <SelectedProductContext.Provider value={{ selectedProduct, setSelectedProduct }}>
