@@ -12,10 +12,12 @@ import Footer from './components/Footer';
 import NotificationManager from './components/NotificationManager';
 
 export default function App() {
+  const basename = import.meta.env.PROD ? '/japan-is-nearby' : '/';
+
   return (
     <CartProvider>
       <NotificationProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={basename}>
           <div className="min-h-screen flex flex-col">
             <Navbar />
             <main className="flex-grow">

@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar';
 import AddReviewModal from '../components/AddReviewModal';
 import { products } from '../data/products';
 import { Review as ReviewType } from '../types/product';
+import { getImagePath } from '../utils/imageUtils';
 
 interface ReviewWithProductInfo extends ReviewType {
   productName: string;
@@ -137,12 +138,12 @@ const Reviews = () => {
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-primary/10">
                       <img 
-                        src={review.avatar} 
+                        src={getImagePath(review.avatar)} 
                         alt={review.author} 
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.src = `/avatars/default-${Math.floor(Math.random() * 5) + 1}.png`;
+                          target.src = getImagePath(`/avatars/default-${Math.floor(Math.random() * 5) + 1}.png`);
                         }}
                       />
                     </div>
