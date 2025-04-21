@@ -1,5 +1,6 @@
 import { cn } from '../lib/utils';
 import type { MouseEvent } from 'react';
+import { getImagePath } from '../utils/imageUtils';
 
 interface ProductImageProps {
   images: string[];
@@ -14,7 +15,7 @@ const ProductImage = ({ images, currentIndex, onDotClick, className }: ProductIm
   return (
     <div className={cn("relative aspect-square overflow-hidden rounded-lg bg-gray-100", className)}>
       <img
-        src={currentImage}
+        src={getImagePath(currentImage)}
         alt="Product"
         className="h-full w-full object-cover transition-transform duration-300"
       />
