@@ -139,7 +139,7 @@ MIT License - подробности в файле [LICENSE](LICENSE)
 ## 📞 Контакты
 
 - GitHub: [@sssmilar](https://github.com/sssmilar)
-- Email: [your.email@example.com]
+- Email: [realdeadinst@gmail.com](mailto:realdeadinst@gmail.com)
 
 ## 🙏 Благодарности
 
