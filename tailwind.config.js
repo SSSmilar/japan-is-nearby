@@ -7,16 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: 'var(--primary)',
-          dark: 'var(--primary-dark)',
-        },
-        background: 'var(--background)',
-        surface: 'var(--surface)',
-        text: {
-          DEFAULT: 'var(--text)',
-          secondary: 'var(--text-secondary)',
-        },
+        primary: '#007BFF',
+        'primary-dark': '#0056b3',
+        background: '#000000',
+        surface: '#1A1A1A',
+        text: '#FFFFFF',
+        'text-secondary': '#F0F0F0',
         'surface-light': 'var(--surface-light)',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
