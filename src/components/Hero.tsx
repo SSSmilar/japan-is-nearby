@@ -1,5 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 
 const Hero = () => {
   return (
@@ -53,12 +53,12 @@ const Hero = () => {
             transition={{ delay: 0.6 }}
             className="pt-4 relative z-10"
           >
-            <a 
-              href="/catalog" 
+            <Link 
+              to="/catalog" 
               className="inline-block bg-primary hover:bg-primary-dark text-white px-8 py-4 rounded-lg transition-colors duration-300 text-lg shadow-[0_0_20px_rgba(0,123,255,0.3)]"
             >
               Смотреть каталог
-            </a>
+            </Link>
           </motion.div>
         </motion.div>
       </div>
