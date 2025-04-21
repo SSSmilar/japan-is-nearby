@@ -7,6 +7,7 @@ import ConfirmModal from './ConfirmModal';
 import { products } from '../data/products';
 import { Product, ProductVariant } from '../types/product';
 import { useNotification } from '../contexts/NotificationContext';
+import { getImagePath } from '../utils/imageUtils';
 
 interface CartItemType {
   variantId: string;
@@ -240,7 +241,7 @@ const CartIcon = () => {
                           <div className="flex items-center space-x-3">
                             {item.product.images && item.product.images[0] && (
                               <img
-                                src={item.product.images[0]}
+                                src={getImagePath(item.product.images[0])}
                                 alt={item.product.name}
                                 className="w-16 h-16 object-cover rounded-md"
                               />

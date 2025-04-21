@@ -4,6 +4,7 @@ import { Product } from '../types/product';
 import { products } from '../data/products';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { getImagePath } from '../utils/imageUtils';
 
 const SearchBox = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -116,7 +117,7 @@ const SearchBox = () => {
                 onClick={() => handleProductSelect(product.id)}
               >
                 <img
-                  src={product.images[0]}
+                  src={getImagePath(product.images[0])}
                   alt={product.name}
                   className="w-12 h-12 object-cover rounded"
                 />
