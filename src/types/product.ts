@@ -21,8 +21,7 @@ export interface Review {
   rating: number;
   date: string;
   text: string;
-  avatar?: string;
-  images?: string[]; 
+  avatar: string;
 }
 
 export interface Product {

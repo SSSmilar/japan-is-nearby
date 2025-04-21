@@ -5,7 +5,6 @@ import Navbar from '../components/Navbar';
 import AddReviewModal from '../components/AddReviewModal';
 import { products } from '../data/products';
 import { Review as ReviewType } from '../types/product';
-import Footer from '../components/Footer';
 
 interface ReviewWithProductInfo extends ReviewType {
   productName: string;
@@ -136,11 +135,17 @@ const Reviews = () => {
               <div key={review.id} className="bg-surface p-6 rounded-lg border border-primary/20 hover:border-primary/40 transition-all">
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-start gap-4">
-                    {review.avatar && (
-                      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                        <img src={review.avatar} alt={review.author} className="w-full h-full object-cover" />
-                      </div>
-                    )}
+                    <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-primary/10">
+                      <img 
+                        src={review.avatar} 
+                        alt={review.author} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.src = `/avatars/default-${Math.floor(Math.random() * 5) + 1}.png`;
+                        }}
+                      />
+                    </div>
                     <div>
                       <h3 className="font-medium text-lg text-white">{review.author}</h3>
                       <div className="flex items-center gap-2 text-sm text-text-secondary">
@@ -164,16 +169,6 @@ const Reviews = () => {
                 </div>
                 
                 <p className="text-white mb-4">{review.text}</p>
-                
-                {review.images && review.images.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {review.images.map((image, index) => (
-                      <div key={index} className="w-20 h-20 rounded-lg overflow-hidden">
-                        <img src={image} alt={`Изображение ${index + 1}`} className="w-full h-full object-cover" />
-                      </div>
-                    ))}
-                  </div>
-                )}
                 
                 <div className="flex items-center gap-4 text-sm">
                   <button className="flex items-center gap-1 text-text-secondary hover:text-primary">
@@ -204,8 +199,6 @@ const Reviews = () => {
           setIsModalOpen(false);
         }}
       />
-      
-      <Footer />
     </div>
   );
 };

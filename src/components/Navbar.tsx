@@ -1,30 +1,20 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useLanguage } from '../contexts/LanguageContext';
 import Logo from './Logo';
 import SearchBox from './SearchBox';
 import CartIcon from './CartIcon';
 import { Menu, X } from 'lucide-react';
 
 const Navbar: React.FC = () => {
-  const { language, toggleLanguage } = useLanguage();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const navigation = {
-    ru: [
-      { name: 'Главная', href: '/' },
-      { name: 'Каталог', href: '/catalog' },
-      { name: 'Доставка', href: '/delivery' },
-      { name: 'Отзывы', href: '/reviews' },
-    ],
-    en: [
-      { name: 'Home', href: '/' },
-      { name: 'Catalog', href: '/catalog' },
-      { name: 'Delivery', href: '/delivery' },
-      { name: 'Reviews', href: '/reviews' },
-    ],
-  };
+  const navigation = [
+    { name: 'Главная', href: '/' },
+    { name: 'Каталог', href: '/catalog' },
+    { name: 'Доставка', href: '/delivery' },
+    { name: 'Отзывы', href: '/reviews' },
+  ];
 
   const isActive = (path: string) => {
     if (path === '/' && location.pathname !== '/') {
@@ -50,9 +40,9 @@ const Navbar: React.FC = () => {
             </Link>
           </div>
 
-          {/* Search, Cart, and Language */}
+          {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-6">
-            {navigation[language].map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
@@ -76,12 +66,6 @@ const Navbar: React.FC = () => {
           <div className="flex items-center gap-4">
             <SearchBox />
             <CartIcon />
-            <button
-              onClick={toggleLanguage}
-              className="text-white hover:text-primary transition-colors"
-            >
-              {language === 'ru' ? 'RU' : 'EN'}
-            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -104,7 +88,7 @@ const Navbar: React.FC = () => {
       {isMenuOpen && (
         <div className="md:hidden bg-surface border-t border-primary/20">
           <div className="px-2 pt-2 pb-3 space-y-1">
-            {navigation[language].map((item) => (
+            {navigation.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}

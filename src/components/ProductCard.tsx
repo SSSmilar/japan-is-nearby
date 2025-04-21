@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import ProductImage from './ProductImage';
 import { formatPrice } from '../utils/priceUtils';
 import { useNotification } from '../contexts/NotificationContext';
-import { useLanguage } from '../contexts/LanguageContext';
 
 export interface ProductCardProps {
   product: Product;
@@ -29,7 +28,6 @@ const ProductCard = ({ product, onHighlight, isHighlighted }: ProductCardProps) 
   const { addToCart, getCartQuantity, updateQuantity } = useCart();
   const { showNotification } = useNotification();
   const navigate = useNavigate();
-  const { language } = useLanguage();
 
   const variantId = defaultVariant?.id;
   const cartQuantity = variantId ? getCartQuantity(variantId) : 0;
@@ -214,7 +212,6 @@ const ProductCard = ({ product, onHighlight, isHighlighted }: ProductCardProps) 
               <button
                 onClick={handleReviewsClick}
                 className="text-text-secondary hover:text-primary transition-colors text-sm flex items-center gap-1"
-                title={language === 'ru' ? 'Читать отзывы' : 'Read reviews'}
               >
                 <MessageSquare className="w-3.5 h-3.5" />
                 ({product.reviews.length})
@@ -253,8 +250,8 @@ const ProductCard = ({ product, onHighlight, isHighlighted }: ProductCardProps) 
                 "text-red-400"
               )}>
                 {remainingStock > 0 
-                  ? `${language === 'ru' ? 'В наличии' : 'In stock'}: ${remainingStock} ${language === 'ru' ? 'шт.' : 'pcs'}`
-                  : language === 'ru' ? 'Нет в наличии' : 'Out of stock'
+                  ? `В наличии: ${remainingStock} шт.`
+                  : 'Нет в наличии'
                 }
               </span>
             </div>
@@ -268,14 +265,14 @@ const ProductCard = ({ product, onHighlight, isHighlighted }: ProductCardProps) 
             className="flex items-center justify-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:bg-gray-700 disabled:text-gray-300 cursor-default transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] group text-sm"
           >
             <ShoppingCart className="w-4 h-4 mr-1.5 transition-transform duration-300 group-hover:scale-110" />
-            <span className="font-medium">{language === 'ru' ? 'В корзину' : 'Add to Cart'}</span>
+            <span className="font-medium">В корзину</span>
           </button>
           <button
             onClick={handleProceedToCheckout}
             disabled={!defaultVariant || availableStock === 0 || quantity > remainingStock || quantity === 0}
             className="flex items-center justify-center px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white disabled:border-gray-700 disabled:text-gray-500 cursor-default transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] text-sm"
           >
-            {language === 'ru' ? 'Купить' : 'Buy'}
+            Купить
           </button>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useLanguage } from '../contexts/LanguageContext';
 import { products } from '../data/products';
 import { useCart } from '../contexts/CartContext';
 import Navbar from '../components/Navbar';
@@ -12,7 +11,6 @@ type TabType = 'specs' | 'description' | 'reviews';
 const ProductPage = () => {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
-  const { language } = useLanguage();
   const { addToCart, updateQuantity, getCartQuantity } = useCart();
   const [selectedVariant, setSelectedVariant] = useState<string | null>(null);
   const [selectedOptions, setSelectedOptions] = useState<{ diameter: string; pcd: string; width: string; et: string } | null>(null);
@@ -195,18 +193,16 @@ const ProductPage = () => {
         <div className="container mx-auto px-4 py-8 flex-grow flex items-center justify-center">
           <div className="bg-surface p-8 rounded-lg shadow-xl text-center">
             <h1 className="text-2xl font-bold text-white mb-4">
-              {language === 'ru' ? 'Товар не найден' : 'Product not found'}
+              Товар не найден
             </h1>
             <p className="text-text-secondary mb-6">
-              {language === 'ru' 
-                ? 'Запрашиваемый товар не найден в нашем каталоге.' 
-                : 'The requested product was not found in our catalog.'}
+              Запрашиваемый товар не найден в нашем каталоге.
             </p>
             <a 
               href="/catalog" 
               className="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-all duration-300"
             >
-              {language === 'ru' ? 'Вернуться в каталог' : 'Back to catalog'}
+              Вернуться в каталог
             </a>
           </div>
         </div>
@@ -219,10 +215,10 @@ const ProductPage = () => {
   const price = selectedVariantObj?.price || product.price;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16 flex-grow">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="container mx-auto px-4 py-8 mt-16">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
           <div className="space-y-4">
             <div className="aspect-square overflow-hidden rounded-lg bg-surface border border-primary/30">
@@ -264,7 +260,7 @@ const ProductPage = () => {
                 ))}
               </div>
               <span className="text-text-secondary text-sm">
-                {product.rating} ({product.reviews.length} {language === 'ru' ? 'отзывов' : 'reviews'})
+                {product.rating} ({product.reviews.length} отзывов)
               </span>
             </div>
             
@@ -328,7 +324,7 @@ const ProductPage = () => {
             {/* Quantity */}
             <div className="space-y-2">
               <h3 className="text-white font-medium">
-                {language === 'ru' ? 'Количество' : 'Quantity'}
+                Количество
               </h3>
               <div className="flex items-center space-x-4">
                 <div className="flex items-center border border-primary/30 rounded-lg overflow-hidden">
@@ -352,8 +348,8 @@ const ProductPage = () => {
                 </div>
                 <span className="text-text-secondary text-sm">
                   {stockCount > 0 
-                    ? `${language === 'ru' ? 'В наличии' : 'In stock'}: ${stockCount} ${language === 'ru' ? 'шт.' : 'pcs'}`
-                    : language === 'ru' ? 'Нет в наличии' : 'Out of stock'
+                    ? `В наличии: ${stockCount} шт.`
+                    : 'Нет в наличии'
                   }
                 </span>
               </div>
@@ -367,14 +363,14 @@ const ProductPage = () => {
                 className="flex items-center justify-center gap-2 bg-primary text-white py-3 px-6 rounded-lg hover:bg-primary/90 disabled:bg-gray-700 disabled:cursor-not-allowed transition-all duration-300"
               >
                 <ShoppingCart className="w-5 h-5" />
-                <span>{language === 'ru' ? 'В корзину' : 'Add to Cart'}</span>
+                <span>В корзину</span>
               </button>
               <button
                 onClick={handleBuyNow}
                 disabled={!selectedVariant || stockCount === 0}
                 className="bg-surface-light text-primary border border-primary py-3 px-6 rounded-lg hover:bg-primary hover:text-white disabled:bg-gray-800 disabled:border-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed transition-all duration-300"
               >
-                {language === 'ru' ? 'Купить сейчас' : 'Buy Now'}
+                Купить сейчас
               </button>
             </div>
             
@@ -382,11 +378,11 @@ const ProductPage = () => {
             <div className="space-y-2 pt-2 border-t border-primary/20">
               <div className="flex items-center gap-2 text-text-secondary">
                 <Truck className="w-4 h-4 text-primary" />
-                <span className="text-sm">{language === 'ru' ? 'Бесплатная доставка по России' : 'Free shipping across Russia'}</span>
+                <span className="text-sm">Бесплатная доставка по России</span>
               </div>
               <div className="flex items-center gap-2 text-text-secondary">
                 <Package2 className="w-4 h-4 text-primary" />
-                <span className="text-sm">{language === 'ru' ? 'Гарантия качества' : 'Quality guarantee'}</span>
+                <span className="text-sm">Гарантия качества</span>
               </div>
             </div>
           </div>
@@ -405,7 +401,7 @@ const ProductPage = () => {
             >
               <span className="flex items-center gap-1">
                 <Info className="w-4 h-4" />
-                {language === 'ru' ? 'Характеристики' : 'Specifications'}
+                Характеристики
               </span>
             </button>
             <button
@@ -418,7 +414,7 @@ const ProductPage = () => {
             >
               <span className="flex items-center gap-1">
                 <Package2 className="w-4 h-4" />
-                {language === 'ru' ? 'Описание' : 'Description'}
+                Описание
               </span>
             </button>
             <button
@@ -431,21 +427,19 @@ const ProductPage = () => {
             >
               <span className="flex items-center gap-1">
                 <MessageSquare className="w-4 h-4" />
-                {language === 'ru' ? `Отзывы (${product.reviews.length})` : `Reviews (${product.reviews.length})`}
+                Отзывы ({product.reviews.length})
               </span>
             </button>
           </div>
           
-          <div className="py-6 bg-surface rounded-lg mt-4 p-6 border border-primary/20">
+          <div className="mt-6">
             {activeTab === 'specs' && (
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-white">
-                  {language === 'ru' ? 'Технические характеристики' : 'Technical Specifications'}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h2 className="text-xl font-semibold text-white mb-4">Основные характеристики</h2>
                   <div className="space-y-2">
                     <div className="flex justify-between py-2 border-b border-primary/10">
-                      <span className="text-text-secondary">{language === 'ru' ? 'Диаметр' : 'Diameter'}</span>
+                      <span className="text-text-secondary">Диаметр</span>
                       <span className="text-white font-medium">
                         {Array.isArray(product.specs.diameter) 
                           ? product.specs.diameter.join(', ') 
@@ -453,7 +447,7 @@ const ProductPage = () => {
                       </span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-primary/10">
-                      <span className="text-text-secondary">{language === 'ru' ? 'Ширина' : 'Width'}</span>
+                      <span className="text-text-secondary">Ширина</span>
                       <span className="text-white font-medium">{product.specs.width}</span>
                     </div>
                     <div className="flex justify-between py-2 border-b border-primary/10">
@@ -461,19 +455,19 @@ const ProductPage = () => {
                       <span className="text-white font-medium">{product.specs.pcd}</span>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex justify-between py-2 border-b border-primary/10">
-                      <span className="text-text-secondary">ET</span>
-                      <span className="text-white font-medium">
-                        {Array.isArray(product.specs.et) 
-                          ? product.specs.et.join(', ') 
-                          : product.specs.et}
-                      </span>
-                    </div>
-                    <div className="flex justify-between py-2 border-b border-primary/10">
-                      <span className="text-text-secondary">DIA</span>
-                      <span className="text-white font-medium">{product.specs.dia}</span>
-                    </div>
+                </div>
+                <div>
+                  <div className="flex justify-between py-2 border-b border-primary/10">
+                    <span className="text-text-secondary">ET</span>
+                    <span className="text-white font-medium">
+                      {Array.isArray(product.specs.et) 
+                        ? product.specs.et.join(', ') 
+                        : product.specs.et}
+                    </span>
+                  </div>
+                  <div className="flex justify-between py-2 border-b border-primary/10">
+                    <span className="text-text-secondary">DIA</span>
+                    <span className="text-white font-medium">{product.specs.dia}</span>
                   </div>
                 </div>
               </div>
@@ -481,9 +475,7 @@ const ProductPage = () => {
             
             {activeTab === 'description' && (
               <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-white">
-                  {language === 'ru' ? 'Описание товара' : 'Product Description'}
-                </h2>
+                <h2 className="text-xl font-semibold text-white">Описание товара</h2>
                 <div className="text-text-secondary">
                   <p>{product.description}</p>
                 </div>
@@ -493,11 +485,9 @@ const ProductPage = () => {
             {activeTab === 'reviews' && (
               <div className="space-y-6">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-semibold text-white">
-                    {language === 'ru' ? 'Отзывы покупателей' : 'Customer Reviews'}
-                  </h2>
+                  <h2 className="text-xl font-semibold text-white">Отзывы покупателей</h2>
                   <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
-                    {language === 'ru' ? 'Написать отзыв' : 'Write a Review'}
+                    Написать отзыв
                   </button>
                 </div>
                 
@@ -507,11 +497,17 @@ const ProductPage = () => {
                       <div key={review.id} className="border-b border-primary/10 pb-4 last:border-0">
                         <div className="flex justify-between items-start mb-2">
                           <div className="flex items-center gap-3">
-                            {review.avatar && (
-                              <div className="w-10 h-10 rounded-full overflow-hidden">
-                                <img src={review.avatar} alt={review.author} className="w-full h-full object-cover" />
-                              </div>
-                            )}
+                            <div className="w-10 h-10 rounded-full overflow-hidden bg-primary/10">
+                              <img 
+                                src={review.avatar} 
+                                alt={review.author} 
+                                className="w-full h-full object-cover"
+                                onError={(e) => {
+                                  const target = e.target as HTMLImageElement;
+                                  target.src = `/avatars/default-${Math.floor(Math.random() * 5) + 1}.png`;
+                                }}
+                              />
+                            </div>
                             <div>
                               <h4 className="font-medium text-white">{review.author}</h4>
                               <div className="text-text-secondary text-sm">
@@ -529,23 +525,13 @@ const ProductPage = () => {
                           </div>
                         </div>
                         <p className="text-white">{review.text}</p>
-                        
-                        {review.images && review.images.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-3">
-                            {review.images.map((image, index) => (
-                              <div key={index} className="w-16 h-16 rounded overflow-hidden">
-                                <img src={image} alt={`Review image ${index}`} className="w-full h-full object-cover" />
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     ))}
                   </div>
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-text-secondary">
-                      {language === 'ru' ? 'Отзывов пока нет. Будьте первым!' : 'No reviews yet. Be the first!'}
+                      Отзывов пока нет. Будьте первым!
                     </p>
                   </div>
                 )}
