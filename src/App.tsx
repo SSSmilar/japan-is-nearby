@@ -7,6 +7,7 @@ import Catalog from './pages/Catalog';
 import Delivery from './pages/Delivery';
 import Reviews from './pages/Reviews';
 import ProductPage from './pages/ProductPage';
+import NotFound from './pages/NotFound';
 import './App.css';
 import Footer from './components/Footer';
 import NotificationManager from './components/NotificationManager';
@@ -23,10 +24,11 @@ export default function App() {
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="catalog" element={<Catalog />} />
-                <Route path="delivery" element={<Delivery />} />
-                <Route path="reviews" element={<Reviews />} />
-                <Route path="product/:id" element={<ProductPage />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/delivery" element={<Delivery />} />
+                <Route path="/reviews" element={<Reviews />} />
+                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
             </main>
             <Footer />
